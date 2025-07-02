@@ -2,11 +2,11 @@ import express, { Request, Response } from "express";
 import { Pool } from "mysql2/promise";
 import { ShoppingCartService } from "../services/shopping_cart.service";
 import { CartItemService } from "../services/cart_item.service";
-// import { authMiddleware } from "../middleware/auth.middleware"; // WICHTIG!
+import { authMiddleware } from "../middleware/auth.middleware"; // WICHTIG!
 
 // Definiere eine benutzerdefinierte Request-Typ, um `user` einzuschließen
 interface AuthenticatedRequest extends Request {
-  user?: { id: number }; // Annahme: Middleware fügt user-Objekt mit id hinzu
+  user?: { id: number };
 }
 
 export function createCartRouter(db: Pool) {
@@ -16,8 +16,8 @@ export function createCartRouter(db: Pool) {
   const shoppingCartService = new ShoppingCartService(db);
   const cartItemService = new CartItemService(db);
 
-  // Alle Routen hier sollten geschützt sein, daher die Middleware am Anfang
-  // router.use(authMiddleware); // Hier würde deine Auth-Middleware platziert
+  router.use(express.json());
+	router.use(authMiddleware);
 
   /**
    * GET /cart
@@ -25,8 +25,7 @@ export function createCartRouter(db: Pool) {
    */
   router.get('/', async (req: AuthenticatedRequest, res: Response) => {
     try {
-      // Annahme: Middleware hat req.user.id gesetzt
-      const userId = req.user?.id;
+      const userId = req.user!.id;
       if (!userId) {
         res.status(401).json({ error: "Nicht autorisiert." });
         return
@@ -53,7 +52,7 @@ export function createCartRouter(db: Pool) {
    */
   router.post('/items', express.json(), async (req: AuthenticatedRequest, res: Response) => {
     const { itemId, quantity } = req.body;
-    const userId = req.user?.id;
+    const userId = req.user!.id;
 
     if (!userId) {
       res.status(401).json({ error: "Nicht autorisiert." });

@@ -12,10 +12,10 @@ export function createAuthRouter(db: Pool){
     try {
       const user = await authService.register(req.body);
       res.status(201).json(user);
-    } catch (err){
-      console.error(err);
-      res.status(400).json({error: "Registrierung fehlgeschlagen"});
-    }
+    } catch (err: any) { // Gib 'err' einen Typ
+			console.error(err);
+			res.status(400).json({ error: err.message || "Registrierung fehlgeschlagen" });
+		}
   });
 
   router.post('/login', express.json(), async (req, res) : Promise<void> => {
@@ -29,5 +29,5 @@ export function createAuthRouter(db: Pool){
       res.status(500).json({error: "Login fehlgeschlagen"});
     }
   })
-
+ 	return router;
 }

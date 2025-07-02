@@ -10,6 +10,14 @@ import {ProductPreviewSectionComponent} from './components/product-preview-secti
 import {ReviewSectionComponent} from './components/review-section.component';
 import {HomeComponent} from './pages/home/home.component';
 import dotenv from 'dotenv';
+import { authMiddleware } from '../middleware/auth.middleware';
+import { createAuthRouter } from '../controller/auth.controller';
+import { createCartRouter } from '../controller/cart.controller';
+import { createItemRouter } from '../controller/item.controller';
+import pool from './database';
+import express from 'express'
+
+dotenv.config(); // Lädt die Variablen aus .env in process.env
 
 
 @Component({
@@ -22,10 +30,15 @@ export class App {
   protected title = 'datenbanken';
 }
 
-dotenv.config(); // Lädt die Variablen aus .env in process.env
+const app = express();
+const port = process.env['PORT'] || 3000;
 
+const authRouter = createAuthRouter(pool);
+const itemRouter = createCartRouter(pool);
+const cartRouter = createItemRouter(pool);
 
-import { authMiddleware } from '../middleware/auth.middleware';
-import { createAuthRouter } from '../controller/auth.controller';
-import { createCartRouter } from '../controller/cart.controller';
-import { createItemRouter } from '../controller/item.controller';
+app.use(express.json());
+
+app.use('/auth', authRouter);
+app.use('/cart', cartRouter);
+app.use('/item', itemRouter);

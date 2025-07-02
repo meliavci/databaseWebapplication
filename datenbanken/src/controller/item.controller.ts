@@ -1,10 +1,14 @@
 import express, { RequestHandler } from "express";
 import { Pool } from "mysql2/promise";
 import { ItemService } from '../services/item.service';
+import {authMiddleware} from '../middleware/auth.middleware';
 
 export function createItemRouter(db: Pool) {
   const router = express.Router();
   const itemService = new ItemService(db);
+
+	router.use(express.json());
+	router.use(authMiddleware);
 
   // GET /api/items -> Alle Items abrufen
   router.get('/', async (req, res) => {
@@ -18,7 +22,7 @@ export function createItemRouter(db: Pool) {
   });
 
   // POST /api/items -> Neues Item erstellen
-  router.post('/', express.json(), async (req, res) => {
+  router.post('/', authMiddleware, async (req, res) => {
     try {
       const newItem = await itemService.createItem(req.body);
       res.status(201).json(newItem);
@@ -44,9 +48,9 @@ export function createItemRouter(db: Pool) {
   });
 
   // PATCH /api/items/:id -> Ein Item aktualisieren
-  router.patch('/:id', express.json(), async (req, res) => {
+  router.patch('/:id', authMiddleware, async (req, res) => {
     try {
-      const updatedItem = await itemService.updateItem(Number(req.params.id), req.body);
+      const updatedItem = await itemService.updateItem(Number(req.params["id"]), req.body);
       if (!updatedItem) {
         res.status(404).json({ error: "Item nicht gefunden" });
         return
@@ -59,9 +63,9 @@ export function createItemRouter(db: Pool) {
   });
 
   // Korrekt mit dem Pfad '/:id'
-  router.delete('/:id', async (req, res) => {
+  router.delete('/:id', authMiddleware, async (req, res) => {
     try {
-      const success = await itemService.deleteItem(Number(req.params.id));
+      const success = await itemService.deleteItem(Number(req.params["id"]));
       if (!success) {
         res.status(404).json({ error: "Item zum Löschen nicht gefunden" });
         return
@@ -71,5 +75,5 @@ export function createItemRouter(db: Pool) {
       console.error(err);
       res.status(500).json({ error: "Fehler beim Löschen des Items" });
     }
-  });
+  });  return router;
 }

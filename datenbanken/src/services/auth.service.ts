@@ -1,4 +1,4 @@
-import bcrypt from 'bcrypt';
+import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken'; // Importieren
 import {UserService} from './user.service';
 import {User} from '../models/user.models';
