@@ -1,5 +1,6 @@
 import { Pool } from "mysql2/promise";
 import { User } from "../models/user.models";
+import bcrypt from 'bcrypt';
 
 export class UserService{
   constructor(private db: Pool) {}
