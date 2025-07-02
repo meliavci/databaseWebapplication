@@ -1,4 +1,4 @@
-export interface Artikel{
+export interface Item{
   id: number;
   category: string;
   description: string;
