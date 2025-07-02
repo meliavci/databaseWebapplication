@@ -1,0 +1,302 @@
+[
+  {
+    "id": 1,
+    "category": "Gaming",
+    "description": "Sony PlayStation 5 (Slim-Modell) - Spielkonsole mit Ultra HD Blu-ray-Laufwerk, 1TB SSD, Tempest 3D AudioTech und DualSense Wireless-Controller.",
+    "status": "Verfügbar",
+    "borrowed_by": null,
+    "date_loan": null,
+    "date_return": null,
+    "price": 549.99
+  },
+  {
+    "id": 2,
+    "category": "Gaming",
+    "description": "Valve Steam Deck OLED - Handheld-Gaming-PC mit 7,4-Zoll-HDR-OLED-Display, 512GB NVMe-SSD und Wi-Fi 6E.",
+    "status": "Ausgeliehen",
+    "borrowed_by": null,
+    "date_loan": null,
+    "date_return": null,
+    "price": 579.00
+  },
+  {
+    "id": 3,
+    "category": "Gaming",
+    "description": "Meta Quest 3 - Mixed Reality Headset mit 128 GB Speicher, verbesserter Passthrough-Technologie und Touch Plus-Controllern.",
+    "status": "Verfügbar",
+    "borrowed_by": null,
+    "date_loan": null,
+    "date_return": null,
+    "price": 549.99
+  },
+  {
+    "id": 4,
+    "category": "Kamera",
+    "description": "Sony Alpha 7 IV - Spiegellose Vollformatkamera mit 33 MP Sensor, 4K 60p Video, schnellem Hybrid-Autofokus und schwenkbarem Display.",
+    "status": "Verfügbar",
+    "borrowed_by": null,
+    "date_loan": null,
+    "date_return": null,
+    "price": 2799.00
+  },
+  {
+    "id": 5,
+    "category": "Kamera",
+    "description": "GoPro HERO12 Black - Action-Kamera mit 5.3K60 Video, HyperSmooth 6.0-Stabilisierung, HDR und wasserdichtem Gehäuse.",
+    "status": "In Wartung",
+    "borrowed_by": null,
+    "date_loan": null,
+    "date_return": null,
+    "price": 449.99
+  },
+  {
+    "id": 6,
+    "category": "Kamera",
+    "description": "DJI Mini 4 Pro - Leichte Kameradrohne unter 249g mit 4K/60fps HDR Video, omnidirektionaler Hinderniserkennung und 34 Min. Flugzeit.",
+    "status": "Verfügbar",
+    "borrowed_by": null,
+    "date_loan": null,
+    "date_return": null,
+    "price": 799.00
+  },
+  {
+    "id": 7,
+    "category": "Smartphone",
+    "description": "Apple iPhone 15 Pro - 6,1 Zoll Super Retina XDR Display, Titan-Gehäuse, A17 Pro Chip und professionelles Kamerasystem mit 48 MP Hauptkamera.",
+    "status": "Verfügbar",
+    "borrowed_by": null,
+    "date_loan": null,
+    "date_return": null,
+    "price": 1199.00
+  },
+  {
+    "id": 8,
+    "category": "Smartphone",
+    "description": "Samsung Galaxy S24 Ultra - Smartphone mit integriertem S Pen, 200 MP Kamera, Snapdragon 8 Gen 3 Prozessor und Galaxy AI-Funktionen.",
+    "status": "Ausgeliehen",
+    "borrowed_by": null,
+    "date_loan": null,
+    "date_return": null,
+    "price": 1449.00
+  },
+  {
+    "id": 9,
+    "category": "Smartphone",
+    "description": "Google Pixel 8 Pro - Android Smartphone mit Google Tensor G3 Chip, 6,7 Zoll Super Actua Display und KI-gestützten Kamerafunktionen.",
+    "status": "Verfügbar",
+    "borrowed_by": null,
+    "date_loan": null,
+    "date_return": null,
+    "price": 1099.00
+  },
+  {
+    "id": 10,
+    "category": "Wearables",
+    "description": "Apple Watch Ultra 2 - Robuste Smartwatch mit Titangehäuse, extra hellem Display, Präzisions-Dual-Frequenz-GPS und fortschrittlichen Gesundheits- und Outdoor-Funktionen.",
+    "status": "Verfügbar",
+    "borrowed_by": null,
+    "date_loan": null,
+    "date_return": null,
+    "price": 899.00
+  },
+  {
+    "id": 11,
+    "category": "Wearables",
+    "description": "Samsung Galaxy Watch6 Classic - Smartwatch im klassischen Uhrendesign mit drehbarer Lünette, Saphirglas und Wear OS.",
+    "status": "Verfügbar",
+    "borrowed_by": null,
+    "date_loan": null,
+    "date_return": null,
+    "price": 419.00
+  },
+  {
+    "id": 12,
+    "category": "Wearables",
+    "description": "Oura Ring Gen 3 - Smarter Ring zur Überwachung von Schlaf, Aktivität und Erholung. Titan-Konstruktion mit Temperatursensoren.",
+    "status": "Verfügbar",
+    "borrowed_by": null,
+    "date_loan": null,
+    "date_return": null,
+    "price": 314.00
+  },
+  {
+    "id": 13,
+    "category": "Audio",
+    "description": "Sony WH-1000XM5 - Kabellose Noise-Cancelling-Kopfhörer mit branchenführender Geräuschminimierung, hervorragender Klangqualität und 30 Stunden Akkulaufzeit.",
+    "status": "Ausgeliehen",
+    "borrowed_by": null,
+    "date_loan": null,
+    "date_return": null,
+    "price": 349.99
+  },
+  {
+    "id": 14,
+    "category": "Audio",
+    "description": "Apple AirPods Pro (2. Generation) - In-Ear Kopfhörer mit adaptivem Audio, aktiver Geräuschunterdrückung und personalisiertem 3D-Audio.",
+    "status": "Verfügbar",
+    "borrowed_by": null,
+    "date_loan": null,
+    "date_return": null,
+    "price": 279.00
+  },
+  {
+    "id": 15,
+    "category": "Audio",
+    "description": "Sonos Era 100 - Kompakter Smart Speaker der nächsten Generation mit raumfüllendem Stereo-Sound, WLAN- und Bluetooth-Konnektivität und Sprachsteuerung.",
+    "status": "Verfügbar",
+    "borrowed_by": null,
+    "date_loan": null,
+    "date_return": null,
+    "price": 279.00
+  },
+  {
+    "id": 16,
+    "category": "Gaming",
+    "description": "Nintendo Switch (OLED-Modell) - Spielkonsole mit 7-Zoll-OLED-Bildschirm, verbessertem Audio, breitem anpassbaren Aufsteller und 64 GB internem Speicher.",
+    "status": "Verfügbar",
+    "borrowed_by": null,
+    "date_loan": null,
+    "date_return": null,
+    "price": 349.99
+  },
+  {
+    "id": 17,
+    "category": "Gaming",
+    "description": "Logitech G PRO X SUPERLIGHT 2 - Ultraleichte kabellose Gaming-Maus (60g) mit LIGHTSPEED-Technologie, HERO 2 Sensor und LIGHTFORCE Hybrid-Switches.",
+    "status": "Ausgeliehen",
+    "borrowed_by": null,
+    "date_loan": null,
+    "date_return": null,
+    "price": 169.00
+  },
+  {
+    "id": 18,
+    "category": "Audio",
+    "description": "SteelSeries Arctis Nova Pro Wireless - Multi-System-Gaming-Headset mit aktiver Geräuschunterdrückung, Hi-Res Audio und dem GameDAC Gen 2.",
+    "status": "Verfügbar",
+    "borrowed_by": null,
+    "date_loan": null,
+    "date_return": null,
+    "price": 379.99
+  },
+  {
+    "id": 19,
+    "category": "Gaming",
+    "description": "Dell Alienware AW3423DWF - 34-Zoll-QD-OLED-Gaming-Monitor mit 165Hz Bildwiederholrate, WQHD-Auflösung und Quantum-Dot-Technologie für überragende Farben.",
+    "status": "Verfügbar",
+    "borrowed_by": null,
+    "date_loan": null,
+    "date_return": null,
+    "price": 999.00
+  },
+  {
+    "id": 20,
+    "category": "Kamera",
+    "description": "Canon EOS R6 Mark II - Spiegellose Vollformatkamera mit 24,2 MP Sensor, 4K60p Video (ohne Crop) und fortschrittlichem Dual Pixel CMOS AF II.",
+    "status": "Verfügbar",
+    "borrowed_by": null,
+    "date_loan": null,
+    "date_return": null,
+    "price": 2699.00
+  },
+  {
+    "id": 21,
+    "category": "Kamera",
+    "description": "Sony ZV-E1 - Kompakte Vollformat-Vlogging-Kamera mit Wechselobjektiv, KI-gestütztem Autofokus, dynamischem Aktivmodus und filmreifen Voreinstellungen.",
+    "status": "In Wartung",
+    "borrowed_by": null,
+    "date_loan": null,
+    "date_return": null,
+    "price": 2499.00
+  },
+  {
+    "id": 22,
+    "category": "Kamera",
+    "description": "Insta360 X4 - 8K 360°-Action-Kamera mit unsichtbarem Selfie-Stick-Effekt, FlowState-Stabilisierung, 360°-Horizontsperre und wasserdichtem Gehäuse.",
+    "status": "Verfügbar",
+    "borrowed_by": null,
+    "date_loan": null,
+    "date_return": null,
+    "price": 559.99
+  },
+  {
+    "id": 23,
+    "category": "Smartphone",
+    "description": "Samsung Galaxy Z Fold5 - Faltbares Smartphone mit großem 7,6-Zoll-Hauptdisplay, Multi-Window-Funktionalität, S Pen-Kompatibilität und Snapdragon 8 Gen 2.",
+    "status": "Ausgeliehen",
+    "borrowed_by": null,
+    "date_loan": null,
+    "date_return": null,
+    "price": 1899.00
+  },
+  {
+    "id": 24,
+    "category": "Smartphone",
+    "description": "Nothing Phone (2) - Smartphone mit einzigartigem Glyph-Interface auf der Rückseite, Nothing OS 2.0, Snapdragon 8+ Gen 1 und Dual-50-MP-Kamera.",
+    "status": "Verfügbar",
+    "borrowed_by": null,
+    "date_loan": null,
+    "date_return": null,
+    "price": 699.00
+  },
+  {
+    "id": 25,
+    "category": "Wearables",
+    "description": "Garmin Fenix 7 Pro Solar Edition - Multisport-GPS-Smartwatch mit Solarladefunktion, integrierter LED-Taschenlampe und fortschrittlichen Trainingsmetriken.",
+    "status": "Verfügbar",
+    "borrowed_by": null,
+    "date_loan": null,
+    "date_return": null,
+    "price": 849.99
+  },
+  {
+    "id": 26,
+    "category": "Wearables",
+    "description": "Ray-Ban Meta Smart Glasses (Wayfarer) - Smarte Brille mit integrierter 12-MP-Kamera, fünf Mikrofonen, offenen Lautsprechern und Livestreaming-Funktion.",
+    "status": "Ausgeliehen",
+    "borrowed_by": null,
+    "date_loan": null,
+    "date_return": null,
+    "price": 329.00
+  },
+  {
+    "id": 27,
+    "category": "Audio",
+    "description": "Bose QuietComfort Ultra Earbuds - True-Wireless-Kopfhörer mit erstklassiger Geräuschunterdrückung, CustomTune-Technologie und immersivem Bose Immersive Audio.",
+    "status": "Verfügbar",
+    "borrowed_by": null,
+    "date_loan": null,
+    "date_return": null,
+    "price": 349.95
+  },
+  {
+    "id": 28,
+    "category": "Audio",
+    "description": "Sennheiser AMBEO Soundbar Plus - Kompakte All-in-One-Soundbar mit immersivem 3D-Sound (Dolby Atmos, DTS:X), 7.1.4-Kanal-Performance und automatischer Raumkalibrierung.",
+    "status": "Verfügbar",
+    "borrowed_by": null,
+    "date_loan": null,
+    "date_return": null,
+    "price": 1499.00
+  },
+  {
+    "id": 29,
+    "category": "Audio",
+    "description": "Shure SM7B - Legendäres dynamisches Vokal-Mikrofon, ideal für professionelles Podcasting, Streaming und Studioaufnahmen. Benötigt Audio-Interface.",
+    "status": "Verfügbar",
+    "borrowed_by": null,
+    "date_loan": null,
+    "date_return": null,
+    "price": 439.00
+  },
+  {
+    "id": 30,
+    "category": "Gaming",
+    "description": "Logitech G543 PRO X 60 Drahtlose Gaming-Tastatur mit 60 % Tasten – Optische Schalter"
+    "status": "Verfügbar",
+    "borrowed_by": null,
+    "date_loan": null,
+    "date_return": null,
+    "price": 199.00
+  }
+]
