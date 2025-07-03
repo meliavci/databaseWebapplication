@@ -23,7 +23,7 @@ import {SearchbarComponent} from './searchbar.component';
 					<nav class="hidden md:flex items-center space-x-8">
 						<a routerLink="/howTo" routerLinkActive="text-primary-400"
 							 class="text-neutral-200 text-bold hover:text-white transition-colors duration-200">How To</a>
-						<a routerLink="/account" routerLinkActive="text-primary-400"
+						<a routerLink="/signIn" routerLinkActive="text-primary-400"
 							 class="text-neutral-200 hover:text-white transition-colors duration-200">
 							<svg class="w-5 h-5" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
 								<path d="M344,144c-3.92,52.87-44,96-88,96s-84.15-43.12-88-96c-4-55,35-96,88-96S348,90,344,144Z"
@@ -49,11 +49,11 @@ import {SearchbarComponent} from './searchbar.component';
 				<div class="flex flex-row items-center justify-between gap-10 text-sm">
 					<a routerLink="/category" routerLinkActive="text-primary-400"
 						 class="text-neutral-200 hover:text-white transition-colors duration-200">All categories</a>
-					<a routerLink="/howTo" routerLinkActive="text-primary-400"
+					<a routerLink="/user" routerLinkActive="text-primary-400"
 						 class="text-neutral-200 hover:text-white transition-colors duration-200">Gaming</a>
-					<a routerLink="/products" routerLinkActive="text-primary-400"
+					<a routerLink="/admin" routerLinkActive="text-primary-400"
 						 class="text-neutral-200 hover:text-white transition-colors duration-200">Camera</a>
-					<a routerLink="/account" routerLinkActive="text-primary-400"
+					<a routerLink="/checkout" routerLinkActive="text-primary-400"
 						 class="text-neutral-200 hover:text-white transition-colors duration-200">Smartphones</a>
 					<a routerLink="/cart" routerLinkActive="text-primary-400"
 						 class="text-neutral-200 hover:text-white transition-colors duration-200">Wearables</a>

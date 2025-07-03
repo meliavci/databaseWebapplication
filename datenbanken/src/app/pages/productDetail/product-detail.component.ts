@@ -3,7 +3,7 @@ import {HeaderComponent} from '../../components/header.component';
 import {FooterComponent} from '../../components/footer.component';
 import {AddToCartButtonComponent} from '../../components/add-to-cart-button.component';
 import {FormsModule} from '@angular/forms';
-import {DecimalPipe, NgClass, NgForOf} from '@angular/common';
+import {DecimalPipe, NgClass, NgForOf, NgIf} from '@angular/common';
 
 @Component({
 	selector: "app-product-detail",
@@ -16,6 +16,7 @@ import {DecimalPipe, NgClass, NgForOf} from '@angular/common';
 		NgForOf,
 		NgClass,
 		DecimalPipe,
+		NgIf,
 	],
 	template: `
 		<div class="bg-neutral-950">
