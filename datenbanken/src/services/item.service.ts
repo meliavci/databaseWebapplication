@@ -9,8 +9,8 @@ export class ItemService {
    */
   async createItem(itemData: Omit<Item, 'id'>): Promise<Item> {
     const [result] = await this.db.query(
-      'INSERT INTO items (category, description, status, price) VALUES (?, ?, ?, ?)',
-      [itemData.category, itemData.description, itemData.status, itemData.price]
+      'INSERT INTO items (category, description, status, price, source) VALUES (?, ?, ?, ?)',
+      [itemData.category, itemData.description, itemData.status, itemData.price, itemData.source]
     );
     const insertId = (result as any).insertId;
     return { id: insertId, ...itemData };
