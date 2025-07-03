@@ -4,7 +4,7 @@ import {
   isMainModule,
   writeResponseToNodeResponse,
 } from '@angular/ssr/node';
-import * as express from 'express';
+import express from 'express';
 import { join } from 'node:path';
 import * as mysql from 'mysql2/promise';
 

@@ -5,7 +5,7 @@ import {Component} from '@angular/core';
 	standalone: true,
 	imports: [],
 	template: `
-		<div class="text-white p-6 flex flex-col rounded-xl items-start border border-gray-400">
+		<div class="text-white p-6 flex flex-col rounded-xl items-start border border-neutral-700">
 			<div class="flex flex-row items-center justify-center gap-3 mb-3">
 				<div class="flex flex-row items-center justify-center gap-1">
 					<svg class="w-3 h-3" viewBox="3 2 18 20" fill="none" xmlns="http://www.w3.org/2000/svg">

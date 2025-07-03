@@ -17,5 +17,5 @@ import {HomeComponent} from './pages/home/home.component';
   styleUrl: './app.css'
 })
 export class App {
-  protected title = 'datenbanken';
+  protected title = 'DeviceDrop';
 }

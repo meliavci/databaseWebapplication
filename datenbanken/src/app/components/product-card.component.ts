@@ -5,7 +5,7 @@ import {AddToCartButtonComponent} from './add-to-cart-button.component';
 	selector: 'app-product-card',
 	standalone: true,
 	imports: [
-		AddToCartButtonComponent
+		AddToCartButtonComponent,
 	],
 	template: `
 		<div

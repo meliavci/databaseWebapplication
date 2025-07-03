@@ -14,7 +14,7 @@ import {Component} from '@angular/core';
 					</p>
 				</div>
 				<div class="grid grid-cols-1 md:grid-cols-3 gap-8 ">
-					<div class="p-8 text-center backdrop-blur bg-neutral-950 rounded-xl border border-gray-400">
+					<div class="p-8 text-center backdrop-blur bg-neutral-950 rounded-xl border border-neutral-700">
 						<div class="w-16 h-16 bg-neutral-900 rounded-2xl flex items-center justify-center mx-auto mb-10 p-3">
 							<svg width="800px" height="800px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
 								<path d="M9 12L11 14L15 9.99999M20 12C20 16.4611 14.54 19.6937 12.6414 20.683C12.4361 20.79 12.3334 20.8435 12.191 20.8712C12.08 20.8928 11.92 20.8928 11.809 20.8712C11.6666 20.8435 11.5639 20.79 11.3586 20.683C9.45996 19.6937 4 16.4611 4 12V8.21759C4 7.41808 4 7.01833 4.13076 6.6747C4.24627 6.37113 4.43398 6.10027 4.67766 5.88552C4.9535 5.64243 5.3278 5.50207 6.0764 5.22134L11.4382 3.21067C11.6461 3.13271 11.75 3.09373 11.857 3.07827C11.9518 3.06457 12.0482 3.06457 12.143 3.07827C12.25 3.09373 12.3539 3.13271 12.5618 3.21067L17.9236 5.22134C18.6722 5.50207 19.0465 5.64243 19.3223 5.88552C19.566 6.10027 19.7537 6.37113 19.8692 6.6747C20 7.01833 20 7.41808 20 8.21759V12Z" stroke="#FFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -25,7 +25,7 @@ import {Component} from '@angular/core';
 							All devices are fully insured an covered by our premium protection program.
 						</p>
 					</div>
-					<div class="p-8 text-center backdrop-blur bg-neutral-950 rounded-xl border border-gray-400">
+					<div class="p-8 text-center backdrop-blur bg-neutral-950 rounded-xl border border-neutral-700">
 						<div class="w-16 h-16 bg-neutral-900 rounded-2xl flex items-center justify-center mx-auto mb-10 p-3">
 							<svg width="800px" height="800px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
 								<path d="M12 20.5001C16.6944 20.5001 20.5 16.6945 20.5 12.0001C20.5 9.17456 19.1213 6.67103 17 5.1255M13 22.4001L11 20.4001L13 18.4001M12 3.5001C7.30558 3.5001 3.5 7.30568 3.5 12.0001C3.5 14.8256 4.87867 17.3292 7 18.8747M11 5.6001L13 3.6001L11 1.6001" stroke="#FFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -36,7 +36,7 @@ import {Component} from '@angular/core';
 							Fast and free delivery and professional setup at your home.
 						</p>
 					</div>
-					<div class="p-8 text-center backdrop-blur bg-neutral-950 rounded-xl border border-gray-400">
+					<div class="p-8 text-center backdrop-blur bg-neutral-950 rounded-xl border border-neutral-700">
 						<div class="w-16 h-16 bg-neutral-900 rounded-2xl flex items-center justify-center mx-auto mb-10 p-3">
 							<svg width="800px" height="800px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
 								<path fill-rule="evenodd" clip-rule="evenodd" d="M8.52832 16.826C8.53464 17.7132 8.01843 18.5166 7.22106 18.8607C6.42369 19.2047 5.50274 19.0213 4.88882 18.3962C4.27491 17.7712 4.08935 16.828 4.41891 16.0077C4.74847 15.1873 5.52803 14.652 6.39307 14.652C6.95731 14.6499 7.49925 14.8777 7.89969 15.2854C8.30013 15.6931 8.52625 16.2473 8.52832 16.826V16.826Z" stroke="#FFFF" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
