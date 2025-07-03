@@ -1,0 +1,12 @@
+# Ein starkes, zufälliges Secret für die JWT-Signierung
+JWT_SECRET=sehrgeheimohasogeheimichglaubedaraufkommtniemandjemalsdaswärschonunwahrscheinlich0
+# Database
+DB_HOST=devicedrop-db-do-user-23636524-0.j.db.ondigitalocean.com
+DB_PORT=25060
+DB_USER=doadmin
+DB_PASSWORD=AVNS_BDUoQohnDm1Xown1mLQ
+DB_DATABASE=defaultdb
+
+DB_String=mysql://doadmin:AVNS_BDUoQohnDm1Xown1mLQ@devicedrop-db-do-user-23636524-0.j.db.ondigitalocean.com:25060/defaultdb?ssl-mode=REQUIRED
+
+DB_SSL_CERT_PATH=./ca-certificate.crt
