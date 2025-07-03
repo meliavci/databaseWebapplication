@@ -29,6 +29,21 @@ export class UserService{
     };
   }
 
+	async findUserByUsername(username: string): Promise<User | null> {
+		const [rows] = await this.db.query('SELECT * FROM users WHERE username = ?', [username]);
+		if ((rows as any).length === 0) return null;
+		const userRow = (rows as any)[0];
+		return {
+			id: userRow.id,
+			username: userRow.username,
+			password: userRow.password,
+			email: userRow.email,
+			user_flag: userRow.user_flag,
+			name: userRow.name,
+			address: userRow.address,
+		};
+	}
+
   async updatePassword(userId: number, newPassword: string): Promise<void>{
     const hashedPassword = await bcrypt.hash(newPassword, 10);
 

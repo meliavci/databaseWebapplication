@@ -19,9 +19,9 @@ export function createAuthRouter(db: Pool){
   });
 
   router.post('/login', express.json(), async (req, res) : Promise<void> => {
-    const {email, password} = req.body;
+    const {username, password} = req.body;
     try{
-      const token = await authService.login(email, password);
+      const token = await authService.login(username, password);
       if (!token) res.status(401).json({error: "Ungültige Anmeldedaten"});
       res.json({token});
     } catch (err){
@@ -29,5 +29,6 @@ export function createAuthRouter(db: Pool){
       res.status(500).json({error: "Login fehlgeschlagen"});
     }
   })
+
  	return router;
 }

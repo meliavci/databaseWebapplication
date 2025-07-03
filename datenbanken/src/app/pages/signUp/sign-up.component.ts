@@ -1,9 +1,12 @@
-import {Component} from '@angular/core';
+import {Component, inject} from '@angular/core';
 import {FooterComponent} from '../../components/footer.component';
 import {HeaderComponent} from '../../components/header.component';
 import {FormsModule} from '@angular/forms';
 import {LogoComponent} from '../../components/logo.component';
 import {RouterLink} from '@angular/router';
+import{ AuthService } from '../../servicesFE/authFE';
+import { NgForm } from '@angular/forms';
+import { Router } from '@angular/router';
 
 @Component({
 	selector: "app-sign-up",
@@ -29,7 +32,7 @@ import {RouterLink} from '@angular/router';
 							<p class="text-gray-400 mt-2">Start your tech rental journey!</p>
 						</div>
 
-						<form #authForm="ngForm">
+						<form #authForm="ngForm" (ngSubmit)="onSubmit(authForm)">
 							<div class="space-y-4">
 								<div>
 									<label class="block text-sm font-medium text-white mb-2">Full Name</label>
@@ -37,6 +40,7 @@ import {RouterLink} from '@angular/router';
 										type="text"
 										name="name"
 										required
+										ngModel
 										class="w-full input border border-neutral-700 p-3 rounded-lg text-gray-400"
 										placeholder="Enter your full name"
 									>
@@ -47,6 +51,7 @@ import {RouterLink} from '@angular/router';
 										type="text"
 										name="username"
 										required
+										ngModel
 										class="w-full input border border-neutral-700 p-3 rounded-lg text-gray-400"
 										placeholder="Enter your username"
 									>
@@ -57,6 +62,7 @@ import {RouterLink} from '@angular/router';
 										type="email"
 										name="email"
 										required
+										ngModel
 										class="w-full input border border-neutral-700 p-3 rounded-lg text-gray-400"
 										placeholder="Enter your email"
 									>
@@ -67,6 +73,7 @@ import {RouterLink} from '@angular/router';
 										type="password"
 										name="password"
 										required
+										ngModel
 										minlength="6"
 										class="w-full input border border-neutral-700 p-3 rounded-lg text-gray-400"
 										placeholder="Enter your password"
@@ -85,7 +92,7 @@ import {RouterLink} from '@angular/router';
 							<p class="text-gray-400 text-sm">
 								Already have an account?
 								<a routerLink="/signIn"
-									class="text-white font-medium ml-1">
+									 class="text-white font-medium ml-1">
 									Sign in
 								</a>
 							</p>
@@ -95,6 +102,52 @@ import {RouterLink} from '@angular/router';
 			</div>
 			<app-footer></app-footer>
 		</div>
-  `
+	`
 })
-export class SignUpComponent {}
+export class SignUpComponent {
+	// Services per Dependency Injection holen
+	private authService = inject(AuthService);
+	private router = inject(Router);
+
+	// Eigenschaften für Ladezustand und Fehlermeldungen
+	isLoading = false;
+	errorMessage: string | null = null;
+
+	// Diese Methode wird beim Absenden des Formulars aufgerufen
+	onSubmit(form: NgForm): void {
+		// Formular-Validierung prüfen
+		if (!form.valid) {
+			console.log("Formular ist ungültig.");
+			return; // Beenden, wenn das Formular nicht gültig ist
+		}
+
+		// Ladezustand starten und vorherige Fehlermeldungen zurücksetzen
+		this.isLoading = true;
+		this.errorMessage = null;
+
+		// Daten aus dem Formular extrahieren
+		const { name, username, email, password } = form.value;
+
+		// Den AuthService aufrufen, um den Benutzer zu registrieren
+		this.authService.register({ name, username, email, password }).subscribe({
+			// Erfolgsfall: Die Registrierung war erfolgreich
+			next: (response) => {
+				console.log('Registrierung erfolgreich!', response);
+				this.isLoading = false; // Ladezustand beenden
+
+				// Optional: Eine Erfolgsmeldung anzeigen
+				alert('Dein Account wurde erfolgreich erstellt! Bitte logge dich nun ein.');
+
+				// Nach erfolgreicher Registrierung zur Login-Seite navigieren
+				this.router.navigate(['/signIn']);
+			},
+			// Fehlerfall: Bei der Registrierung ist ein Fehler aufgetreten
+			error: (err) => {
+				console.error('Registrierung fehlgeschlagen!', err);
+				// Die Fehlermeldung vom Backend extrahieren (falls vorhanden) oder eine Standardmeldung setzen
+				this.errorMessage = err.error?.message || 'Registrierung fehlgeschlagen. Bitte versuche es später erneut.';
+				this.isLoading = false; // Ladezustand beenden
+			}
+		});
+	}
+}

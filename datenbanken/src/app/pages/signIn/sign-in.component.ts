@@ -1,9 +1,12 @@
-import {Component} from '@angular/core';
+import {Component, inject} from '@angular/core';
 import {HeaderComponent} from '../../components/header.component';
 import {FooterComponent} from '../../components/footer.component';
 import {LogoComponent} from '../../components/logo.component';
 import {FormsModule} from '@angular/forms';
 import {RouterLink} from '@angular/router';
+import { NgForm } from '@angular/forms';
+import { Router } from '@angular/router';
+import { AuthService } from '../../servicesFE/authFE';
 
 @Component({
 	selector: "app-sign-in",
@@ -29,7 +32,7 @@ import {RouterLink} from '@angular/router';
 							<p class="text-gray-400 mt-2">Welcome back!</p>
 						</div>
 
-						<form #authForm="ngForm">
+						<form #authForm="ngForm" (ngSubmit)="onSubmit(authForm)">
 							<div class="space-y-4">
 								<div>
 									<label class="block text-sm font-medium text-white mb-2">Username</label>
@@ -37,6 +40,7 @@ import {RouterLink} from '@angular/router';
 										type="text"
 										name="username"
 										required
+										ngModel
 										class="w-full input border border-neutral-700 p-3 rounded-lg text-gray-400"
 										placeholder="Enter your username"
 									>
@@ -49,6 +53,7 @@ import {RouterLink} from '@angular/router';
 										name="password"
 										required
 										minlength="6"
+										ngModel
 										class="w-full input border border-neutral-700 p-3 rounded-lg text-gray-400"
 										placeholder="Enter your password"
 									>
@@ -76,6 +81,34 @@ import {RouterLink} from '@angular/router';
 			</div>
 			<app-footer></app-footer>
 		</div>
-  `
+	`
 })
-export class SignInComponent {}
+// In der 'export class SignInComponent'-Klasse:
+export class SignInComponent {
+	// Services per Dependency Injection holen
+	private authService = inject(AuthService);
+	private router = inject(Router);
+
+	// Diese Methode wird beim Absenden des Formulars aufgerufen
+	onSubmit(form: NgForm): void {
+		if (form.invalid) {
+			return;
+		}
+
+		console.log('Sende Login-Daten:', form.value);
+
+		// Den login-Aufruf aus unserem neuen Service nutzen
+		this.authService.login(form.value).subscribe({
+			next: (response: any) => {
+				console.log('Backend-Antwort (Login):', response);
+				alert('Login erfolgreich!');
+				// Navigiere zu einer geschützten Hauptseite, z.B. dem Dashboard
+				this.router.navigate(['/']); // Passe den Zielpfad an
+			},
+			error: (err: { error: { error: any; }; }) => {
+				console.error('Login fehlgeschlagen:', err);
+				alert(`Fehler beim Login: ${err.error.error || 'Ungültige Anmeldedaten'}`);
+			}
+		});
+	}
+}

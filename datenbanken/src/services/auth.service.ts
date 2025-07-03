@@ -21,8 +21,8 @@ export class AuthService {
    * Prüft Login-Daten und gibt bei Erfolg einen JWT zurück.
    * @returns Einen JWT-String oder null bei Fehlschlag.
    */
-  async login(email: string, password: string): Promise<string | null> {
-    const user = await this.userService.findUserByEmail(email);
+  async login(username: string, password: string): Promise<string | null> {
+    const user = await this.userService.findUserByUsername(username);
     if (!user) return null;
 
     const passwordMatches = await bcrypt.compare(password, user.password);
