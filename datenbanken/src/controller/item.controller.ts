@@ -8,7 +8,7 @@ export function createItemRouter(db: Pool) {
   const itemService = new ItemService(db);
 
 	router.use(express.json());
-	router.use(authMiddleware);
+
 
   // GET /api/items -> Alle Items abrufen
   router.get('/', async (req, res) => {

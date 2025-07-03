@@ -1,5 +1,6 @@
 export interface Item{
   id: number;
+	name:string;
   category: string;
   description: string;
   status: string;
@@ -7,4 +8,5 @@ export interface Item{
   date_loan?: string;
   date_return?: string;
   price: number;
+  source?:string;
 }

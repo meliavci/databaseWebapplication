@@ -7,7 +7,8 @@
     "borrowed_by": null,
     "date_loan": null,
     "date_return": null,
-    "price": 549.99
+    "price": 549.99,
+		"source": "/1.png"
   },
   {
     "id": 2,
@@ -17,7 +18,8 @@
     "borrowed_by": null,
     "date_loan": null,
     "date_return": null,
-    "price": 579.00
+    "price": 579.00,
+		"source": "/2.png"
   },
   {
     "id": 3,
@@ -27,7 +29,8 @@
     "borrowed_by": null,
     "date_loan": null,
     "date_return": null,
-    "price": 549.99
+    "price": 549.99,
+		"source": "/3.png"
   },
   {
     "id": 4,
@@ -37,7 +40,8 @@
     "borrowed_by": null,
     "date_loan": null,
     "date_return": null,
-    "price": 2799.00
+    "price": 2799.00,
+		"source": "/4.png"
   },
   {
     "id": 5,
@@ -47,7 +51,8 @@
     "borrowed_by": null,
     "date_loan": null,
     "date_return": null,
-    "price": 449.99
+    "price": 449.99,
+		"source": "/5.png"
   },
   {
     "id": 6,
@@ -57,7 +62,8 @@
     "borrowed_by": null,
     "date_loan": null,
     "date_return": null,
-    "price": 799.00
+    "price": 799.00,
+		"source": "/6.png"
   },
   {
     "id": 7,
@@ -67,7 +73,8 @@
     "borrowed_by": null,
     "date_loan": null,
     "date_return": null,
-    "price": 1199.00
+    "price": 1199.00,
+		"source": "/7.png"
   },
   {
     "id": 8,
@@ -77,7 +84,8 @@
     "borrowed_by": null,
     "date_loan": null,
     "date_return": null,
-    "price": 1449.00
+    "price": 1449.00,
+		"source": "/8.png"
   },
   {
     "id": 9,
@@ -87,7 +95,8 @@
     "borrowed_by": null,
     "date_loan": null,
     "date_return": null,
-    "price": 1099.00
+    "price": 1099.00,
+		"source": "/9.png"
   },
   {
     "id": 10,
@@ -97,7 +106,8 @@
     "borrowed_by": null,
     "date_loan": null,
     "date_return": null,
-    "price": 899.00
+    "price": 899.00,
+		"source": "/10.png"
   },
   {
     "id": 11,
@@ -107,7 +117,8 @@
     "borrowed_by": null,
     "date_loan": null,
     "date_return": null,
-    "price": 419.00
+    "price": 419.00,
+		"source": "/11.png"
   },
   {
     "id": 12,
@@ -117,7 +128,8 @@
     "borrowed_by": null,
     "date_loan": null,
     "date_return": null,
-    "price": 314.00
+    "price": 314.00,
+		"source": "/12.png"
   },
   {
     "id": 13,
@@ -127,7 +139,8 @@
     "borrowed_by": null,
     "date_loan": null,
     "date_return": null,
-    "price": 349.99
+    "price": 349.99,
+		"source": "/13.png"
   },
   {
     "id": 14,
@@ -137,7 +150,8 @@
     "borrowed_by": null,
     "date_loan": null,
     "date_return": null,
-    "price": 279.00
+    "price": 279.00,
+		"source": "/14.png"
   },
   {
     "id": 15,
@@ -147,7 +161,8 @@
     "borrowed_by": null,
     "date_loan": null,
     "date_return": null,
-    "price": 279.00
+    "price": 279.00,
+		"source": "/15.png"
   },
   {
     "id": 16,
@@ -157,7 +172,8 @@
     "borrowed_by": null,
     "date_loan": null,
     "date_return": null,
-    "price": 349.99
+    "price": 349.99,
+		"source": "/16.png"
   },
   {
     "id": 17,
@@ -167,7 +183,8 @@
     "borrowed_by": null,
     "date_loan": null,
     "date_return": null,
-    "price": 169.00
+    "price": 169.00,
+		"source": "/17.png"
   },
   {
     "id": 18,
@@ -177,7 +194,8 @@
     "borrowed_by": null,
     "date_loan": null,
     "date_return": null,
-    "price": 379.99
+    "price": 379.99,
+		"source": "/18.png"
   },
   {
     "id": 19,
@@ -187,7 +205,8 @@
     "borrowed_by": null,
     "date_loan": null,
     "date_return": null,
-    "price": 999.00
+    "price": 999.00,
+		"source": "/19.png"
   },
   {
     "id": 20,
@@ -197,7 +216,8 @@
     "borrowed_by": null,
     "date_loan": null,
     "date_return": null,
-    "price": 2699.00
+    "price": 2699.00,
+		"source": "/20.png"
   },
   {
     "id": 21,
@@ -207,7 +227,8 @@
     "borrowed_by": null,
     "date_loan": null,
     "date_return": null,
-    "price": 2499.00
+    "price": 2499.00,
+		"source": "/21.png"
   },
   {
     "id": 22,
@@ -217,7 +238,8 @@
     "borrowed_by": null,
     "date_loan": null,
     "date_return": null,
-    "price": 559.99
+    "price": 559.99,
+		"source": "/22.png"
   },
   {
     "id": 23,
@@ -227,7 +249,8 @@
     "borrowed_by": null,
     "date_loan": null,
     "date_return": null,
-    "price": 1899.00
+    "price": 1899.00,
+		"source": "/23.png"
   },
   {
     "id": 24,
@@ -237,7 +260,8 @@
     "borrowed_by": null,
     "date_loan": null,
     "date_return": null,
-    "price": 699.00
+    "price": 699.00,
+		"source": "/24.png"
   },
   {
     "id": 25,
@@ -247,7 +271,8 @@
     "borrowed_by": null,
     "date_loan": null,
     "date_return": null,
-    "price": 849.99
+    "price": 849.99,
+		"source": "/25.png"
   },
   {
     "id": 26,
@@ -257,7 +282,8 @@
     "borrowed_by": null,
     "date_loan": null,
     "date_return": null,
-    "price": 329.00
+    "price": 329.00,
+		"source": "/26.png"
   },
   {
     "id": 27,
@@ -267,7 +293,8 @@
     "borrowed_by": null,
     "date_loan": null,
     "date_return": null,
-    "price": 349.95
+    "price": 349.95,
+		"source": "/27.png"
   },
   {
     "id": 28,
@@ -277,7 +304,8 @@
     "borrowed_by": null,
     "date_loan": null,
     "date_return": null,
-    "price": 1499.00
+    "price": 1499.00,
+		"source": "/28.png"
   },
   {
     "id": 29,
@@ -287,16 +315,18 @@
     "borrowed_by": null,
     "date_loan": null,
     "date_return": null,
-    "price": 439.00
+    "price": 439.00,
+		"source": "/29.png"
   },
   {
     "id": 30,
     "category": "Gaming",
-    "description": "Logitech G543 PRO X 60 Drahtlose Gaming-Tastatur mit 60 % Tasten – Optische Schalter"
+    "description": "Logitech G543 PRO X 60 Drahtlose Gaming-Tastatur mit 60 % Tasten – Optische Schalter",
     "status": "Verfügbar",
     "borrowed_by": null,
     "date_loan": null,
     "date_return": null,
-    "price": 199.00
+    "price": 199.00,
+		"source": "/30.png"
   }
 ]
