@@ -1,13 +1,13 @@
 import { Pool } from "mysql2/promise";
 import { User } from "../models/user.models";
-import bcrypt from 'bcrypt';
+import bcrypt from 'bcryptjs';
 
 export class UserService{
   constructor(private db: Pool) {}
 
   async createUser(user: User): Promise<User>{
     const [result] = await this.db.query(
-      'INSERT INTO users (username, passwort, email, user_flag, name, address) VALUES (?, ?, ?, ?, ?, ?)',
+      'INSERT INTO users (username, password, email, user_flag, name, address) VALUES (?, ?, ?, ?, ?, ?)',
       [user.username, user.password, user.email, user.user_flag, user.name, user.address]
     );
     user.id = (result as any).insertId;
@@ -21,7 +21,7 @@ export class UserService{
     return {
       id: userRow.id,
       username: userRow.username,
-      password: userRow.passwort,
+      password: userRow.password,
       email: userRow.email,
       user_flag: userRow.user_flag,
       name: userRow.name,
@@ -33,7 +33,7 @@ export class UserService{
     const hashedPassword = await bcrypt.hash(newPassword, 10);
 
     await this.db.query(
-      "UPDATE users Set passwort = ? WHERE id = ?",
+      "UPDATE users Set password = ? WHERE id = ?",
       [hashedPassword, userId]
     );
   }
