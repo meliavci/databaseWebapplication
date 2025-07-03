@@ -4,6 +4,8 @@ import {FooterComponent} from '../../components/footer.component';
 import {AddToCartButtonComponent} from '../../components/add-to-cart-button.component';
 import {FormsModule} from '@angular/forms';
 import {DecimalPipe, NgClass, NgForOf, NgIf} from '@angular/common';
+import { CommonModule } from '@angular/common';
+
 
 @Component({
 	selector: "app-product-detail",
@@ -17,6 +19,7 @@ import {DecimalPipe, NgClass, NgForOf, NgIf} from '@angular/common';
 		NgClass,
 		DecimalPipe,
 		NgIf,
+		CommonModule
 	],
 	template: `
 		<div class="bg-neutral-950">
@@ -54,17 +57,16 @@ import {DecimalPipe, NgClass, NgForOf, NgIf} from '@angular/common';
 											<div class="relative">
 												<select
 													id="rental-duration"
-													[(ngModel)]="rentalDuration"
+													[(ngModel)]="selectedOption"
 													class="w-full appearance-none rounded-md border border-neutral-700 bg-background px-3 py-2 text-sm placeholder:text-black focus:outline-none"
-
 													[ngClass]="{
-												'text-white': rentalDuration,
-												'text-black': !rentalDuration
-												}"
+    'text-white': selectedOption,
+    'text-black': !selectedOption
+  }"
 												>
 													<option
 														*ngFor="let option of rentalOptions"
-														[value]="option.value"
+														[ngValue]="option"
 														class="text-black bg-white"
 													>
 														{{ option.label }}
@@ -74,19 +76,19 @@ import {DecimalPipe, NgClass, NgForOf, NgIf} from '@angular/common';
 										</div>
 										<div class="space-y-2">
 											<div class="flex justify-between items-center">
-											  <span>Monthly price:</span>
-											  <div class="text-right">
+												<span>Monthly price:</span>
+												<div class="text-right">
 											    <span *ngIf="selectedOption.discount" class="text-sm text-muted-foreground line-through">
 											      {{ basePrice }}€
 											    </span>
-											    <span class="font-bold text-lg ml-2">
+													<span class="font-bold text-lg ml-2">
 											      {{ discountedMonthlyPrice | number:'1.2-2' }}€
 											    </span>
-											  </div>
+												</div>
 											</div>
 											<div class="flex justify-between items-center">
-											  <span>Total price ({{ selectedOption.months }} months):</span>
-											  <span class="font-bold text-xl text-primary">
+												<span>Total price ({{ selectedOption.months }} months):</span>
+												<span class="font-bold text-xl text-primary">
 											    {{ totalPrice | number:'1.2-2' }}€
 											  </span>
 											</div>
@@ -146,21 +148,17 @@ import {DecimalPipe, NgClass, NgForOf, NgIf} from '@angular/common';
 			</div>
 			<app-footer></app-footer>
 		</div>
-  `
+	`
 })
 export class ProductDetailComponent {
 	basePrice: number = 30;
-	rentalDuration: string = '1 month';
 	rentalOptions = [
 		{ value: '1 month', label: '1 Month', months: 1, discount: 0 },
 		{ value: '3 months', label: '3 Months (5% discount)', months: 3, discount: 0.05 },
 		{ value: '6 months', label: '6 Months (10% discount)', months: 6, discount: 0.10 },
 		{ value: '9 months', label: '9 Months (15% discount)', months: 9, discount: 0.15 },
 	];
-
-	get selectedOption() {
-		return this.rentalOptions.find(opt => opt.value === this.rentalDuration) || this.rentalOptions[0];
-	}
+	selectedOption = this.rentalOptions[0];
 
 	get discountedMonthlyPrice(): number {
 		return this.basePrice * (1 - this.selectedOption.discount);

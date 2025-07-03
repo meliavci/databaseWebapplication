@@ -6,8 +6,7 @@ import {HowToComponent} from './pages/howTo/how-to.component';
 import {SignInComponent} from './pages/signIn/sign-in.component';
 import {SignUpComponent} from './pages/signUp/sign-up.component';
 import {CheckoutComponent} from './pages/checkout/checkout.component';
-import {UserComponent} from './pages/profile/user.component';
-import {AdminComponent} from './pages/profile/admin.component';
+import {UserComponent} from './components/user.component';
 
 export const routes: Routes = [
 	{
@@ -53,10 +52,5 @@ export const routes: Routes = [
 		path: "user",
 		component: UserComponent,
 		title: "DeviceDrop - User Profile",
-	},
-	{
-		path: "admin",
-		component: AdminComponent,
-		title: "DeviceDrop - Admin Dashboard",
 	}
 ];

@@ -3,7 +3,8 @@ import {Component} from '@angular/core';
 @Component({
 	selector: 'app-hero-section',
 	standalone: true,
-	imports: [],
+	imports: [
+	],
 	template: `
 		<div class="text-white bg-neutral-950">
 			<section class="relative">

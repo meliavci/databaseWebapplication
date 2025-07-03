@@ -27,7 +27,7 @@ import {LogoComponent} from './logo.component';
 				<div>
 					<h3 class="text-white font-semibold mb-4">Quick Links</h3>
 					<ul class="space-y-2">
-						<li><a routerLink="howTo" class="flex items-center space-x-2 text-gray-400 text-sm">HowTo</a></li>
+						<li><a routerLink="/howTo" class="flex items-center space-x-2 text-gray-400 text-sm">HowTo</a></li>
 						<li><a routerLink="products" class="flex items-center space-x-2 text-gray-400 text-sm">Products</a></li>
 						<li><a routerLink="account" class="flex items-center space-x-2 text-gray-400 text-sm">Account</a></li>
 						<li><a routerLink="cart" class="flex items-center space-x-2 text-gray-400 text-sm">Cart</a></li>
