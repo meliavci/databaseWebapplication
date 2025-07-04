@@ -1,17 +1,12 @@
 import {Component} from '@angular/core';
-import {HeaderComponent} from '../../components/header.component';
-import {FooterComponent} from '../../components/footer.component';
 
 @Component({
 	selector: 'app-how-to',
 	imports: [
-		HeaderComponent,
-		FooterComponent
 	],
 	standalone: true,
 	template: `
 		<div class="bg-neutral-950 text-white">
-			<app-header></app-header>
 			<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
 				<div class="max-w-4xl mx-auto text-center space-y-8">
 					<h1 class="text-4xl md:text-6xl lg:text-7xl font-bold leading-tight">
@@ -144,7 +139,6 @@ import {FooterComponent} from '../../components/footer.component';
 					</div>
 				</section>
 			</div>
-			<app-footer></app-footer>
 		</div>
 	`
 })

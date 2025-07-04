@@ -1,8 +1,9 @@
 
 <main class="main">
-  <div class="bg-neutral-900 w-full">
-  </div>
+	<div class="bg-neutral-900 w-full">
+		<app-cart-drawer #cartDrawer></app-cart-drawer>
+		<app-header [cartDrawer]="cartDrawer"></app-header>
+		<router-outlet></router-outlet>
+		<app-footer [cartDrawer]="cartDrawer"></app-footer>
+	</div>
 </main>
-
-
-<router-outlet />

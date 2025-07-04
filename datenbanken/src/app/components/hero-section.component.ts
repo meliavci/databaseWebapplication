@@ -1,9 +1,11 @@
 import {Component} from '@angular/core';
+import {RouterLink} from '@angular/router';
 
 @Component({
 	selector: 'app-hero-section',
 	standalone: true,
 	imports: [
+		RouterLink
 	],
 	template: `
 		<div class="text-white bg-neutral-950">
@@ -21,18 +23,18 @@ import {Component} from '@angular/core';
 						No deposit, no commitment, maximum flexibility.
 					</p>
 					<div class="flex flex-col sm:flex-row items-center gap-4 justify-center mt-15">
-						<button size="large" class="flex items-center gap-2 text-md px-5 py-1 rounded-full bg-white text-black">
+						<a routerLink="/category" size="large" class="flex items-center gap-2 text-md px-5 py-1 rounded-full bg-white text-black cursor-pointer hover:scale-105 delay-100">
 							Discover now
 							<svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
 								<path d="M6 12H18M18 12L13 7M18 12L13 17" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 							</svg>
-						</button>
-						<button size="large" class="flex items-center gap-2 text-md px-5 py-1 rounded-full bg-neutral-950 border border-neutral-700">
+						</a>
+						<a routerLink="/howTo" size="large" class="flex items-center gap-2 text-md px-5 py-1 rounded-full bg-neutral-950 border border-neutral-700 cursor-pointer hover:scale-105 delay-100">
 							This is how it works
 							<svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
 								<path d="M6 12H18M18 12L13 7M18 12L13 17" stroke="#FFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 							</svg>
-						</button>
+						</a>
 					</div>
 				</div>
 

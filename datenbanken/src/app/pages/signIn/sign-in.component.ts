@@ -1,6 +1,4 @@
 import {Component, inject} from '@angular/core';
-import {HeaderComponent} from '../../components/header.component';
-import {FooterComponent} from '../../components/footer.component';
 import {LogoComponent} from '../../components/logo.component';
 import {FormsModule} from '@angular/forms';
 import {RouterLink} from '@angular/router';
@@ -12,15 +10,12 @@ import { AuthService } from '../../servicesFE/authFE';
 	selector: "app-sign-in",
 	standalone: true,
 	imports: [
-		HeaderComponent,
-		FooterComponent,
 		LogoComponent,
 		FormsModule,
 		RouterLink
 	],
 	template: `
 		<div class="bg-neutral-900 text-white">
-			<app-header></app-header>
 			<div class="flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
 				<div class="max-w-md w-full">
 					<div class="card border border-neutral-700 rounded-3xl p-8 bg-neutral-950 shadow-xl">
@@ -60,7 +55,7 @@ import { AuthService } from '../../servicesFE/authFE';
 								</div>
 								<button
 									type="submit"
-									class="w-full btn-primary font-semibold bg-white p-2 mt-3 rounded-lg text-black disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer">
+									class="w-full btn-primary font-semibold bg-white p-2 mt-3 rounded-full text-black disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer">
 									<span class="loading-spinner mr-2"></span>
 									Log In
 								</button>
@@ -79,17 +74,13 @@ import { AuthService } from '../../servicesFE/authFE';
 					</div>
 				</div>
 			</div>
-			<app-footer></app-footer>
 		</div>
 	`
 })
-// In der 'export class SignInComponent'-Klasse:
 export class SignInComponent {
-	// Services per Dependency Injection holen
 	private authService = inject(AuthService);
 	private router = inject(Router);
 
-	// Diese Methode wird beim Absenden des Formulars aufgerufen
 	onSubmit(form: NgForm): void {
 		if (form.invalid) {
 			return;
@@ -97,13 +88,11 @@ export class SignInComponent {
 
 		console.log('Sende Login-Daten:', form.value);
 
-		// Den login-Aufruf aus unserem neuen Service nutzen
 		this.authService.login(form.value).subscribe({
 			next: (response: any) => {
 				console.log('Backend-Antwort (Login):', response);
 				alert('Login erfolgreich!');
-				// Navigiere zu einer geschützten Hauptseite, z.B. dem Dashboard
-				this.router.navigate(['/']); // Passe den Zielpfad an
+				this.router.navigate(['/']);
 			},
 			error: (err: { error: { error: any; }; }) => {
 				console.error('Login fehlgeschlagen:', err);

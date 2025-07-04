@@ -1,6 +1,4 @@
 import {Component} from '@angular/core';
-import {HeaderComponent} from '../../components/header.component';
-import {FooterComponent} from '../../components/footer.component';
 import {AddToCartButtonComponent} from '../../components/add-to-cart-button.component';
 import {FormsModule} from '@angular/forms';
 import {DecimalPipe, NgClass, NgForOf, NgIf} from '@angular/common';
@@ -11,8 +9,6 @@ import { CommonModule } from '@angular/common';
 	selector: "app-product-detail",
 	standalone: true,
 	imports: [
-		HeaderComponent,
-		FooterComponent,
 		AddToCartButtonComponent,
 		FormsModule,
 		NgForOf,
@@ -23,7 +19,6 @@ import { CommonModule } from '@angular/common';
 	],
 	template: `
 		<div class="bg-neutral-950">
-			<app-header></app-header>
 			<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 text-white">
 				<div class="w-full flex flex-row">
 					<div class="w-1/2 flex items-center justify-center">
@@ -48,6 +43,24 @@ import { CommonModule } from '@angular/common';
 										capabilities
 										to create incredible new experiences. (Vertical stand sold separately)</p>
 								</div>
+
+								<div *ngIf="stock > 0; else outOfStock" class="flex items-center gap-2">
+									<svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-green-500" fill="none"
+											 viewBox="0 0 24 24"
+											 stroke="currentColor">
+										<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+													d="M5 13l4 4L19 7"/>
+									</svg>
+									<span class="text-sm text-white">{{ stock }} in stock</span>
+								</div>
+								<ng-template #outOfStock>
+									<div class="flex items-center gap-2">
+										<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+											<path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+										</svg>
+										<span class="text-sm text-red-500">Out of stock</span>
+									</div>
+								</ng-template>
 
 								<div class="p-6 border border-neutral-700 rounded-2xl">
 									<h3 class="font-semibold mb-4">Rental options</h3>
@@ -78,22 +91,22 @@ import { CommonModule } from '@angular/common';
 											<div class="flex justify-between items-center">
 												<span>Monthly price:</span>
 												<div class="text-right">
-											    <span *ngIf="selectedOption.discount" class="text-sm text-muted-foreground line-through">
-											      {{ basePrice }}€
-											    </span>
+               <span *ngIf="selectedOption.discount" class="text-sm text-muted-foreground line-through">
+                 {{ basePrice }}€
+               </span>
 													<span class="font-bold text-lg ml-2">
-											      {{ discountedMonthlyPrice | number:'1.2-2' }}€
-											    </span>
+                 {{ discountedMonthlyPrice | number:'1.2-2' }}€
+               </span>
 												</div>
 											</div>
 											<div class="flex justify-between items-center">
 												<span>Total price ({{ selectedOption.months }} months):</span>
 												<span class="font-bold text-xl text-primary">
-											    {{ totalPrice | number:'1.2-2' }}€
-											  </span>
+               {{ totalPrice | number:'1.2-2' }}€
+             </span>
 											</div>
 										</div>
-										<div class="gap-3 border-t p-4 border-neutral-700 w-full">
+										<div class="gap-3 border-t py-4 border-neutral-700 w-full">
 											<app-add-to-cart-button></app-add-to-cart-button>
 										</div>
 									</div>
@@ -146,11 +159,11 @@ import { CommonModule } from '@angular/common';
 					</div>
 				</div>
 			</div>
-			<app-footer></app-footer>
 		</div>
 	`
 })
 export class ProductDetailComponent {
+	stock: number = 15;
 	basePrice: number = 30;
 	rentalOptions = [
 		{ value: '1 month', label: '1 Month', months: 1, discount: 0 },

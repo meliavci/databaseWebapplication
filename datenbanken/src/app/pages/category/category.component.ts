@@ -1,19 +1,14 @@
 import {Component} from '@angular/core';
-import {FooterComponent} from '../../components/footer.component';
-import {HeaderComponent} from '../../components/header.component';
 import {AppProductCard} from '../../components/products.component';
 
 @Component({
 	selector: 'app-category',
 	standalone: true,
 	imports: [
-		FooterComponent,
-		HeaderComponent,
 		AppProductCard
 	],
 	template: `
 		<div class="bg-neutral-950 text-white">
-			<app-header></app-header>
 			<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
 				<div class="max-w-4xl mx-auto text-center">
 					<h1 class="text-4xl md:text-6xl lg:text-7xl font-bold leading-tight">
@@ -27,7 +22,6 @@ import {AppProductCard} from '../../components/products.component';
 				</div>
 			</div>
 			<app-products></app-products>
-			<app-footer></app-footer>
 		</div>
   `
 })

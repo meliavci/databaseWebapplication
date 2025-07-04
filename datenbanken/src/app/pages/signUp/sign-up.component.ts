@@ -1,6 +1,4 @@
 import {Component, inject} from '@angular/core';
-import {FooterComponent} from '../../components/footer.component';
-import {HeaderComponent} from '../../components/header.component';
 import {FormsModule} from '@angular/forms';
 import {LogoComponent} from '../../components/logo.component';
 import {RouterLink} from '@angular/router';
@@ -12,15 +10,12 @@ import { Router } from '@angular/router';
 	selector: "app-sign-up",
 	standalone: true,
 	imports: [
-		FooterComponent,
-		HeaderComponent,
 		FormsModule,
 		LogoComponent,
 		RouterLink
 	],
 	template: `
 		<div class="bg-neutral-900 text-white">
-			<app-header></app-header>
 			<div class="flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
 				<div class="max-w-md w-full">
 					<div class="card border border-neutral-700 rounded-3xl p-8 bg-neutral-950 shadow-xl">
@@ -81,7 +76,7 @@ import { Router } from '@angular/router';
 								</div>
 								<button
 									type="submit"
-									class="w-full btn-primary font-semibold bg-white p-2 mt-3 rounded-lg text-black disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer">
+									class="w-full btn-primary font-semibold bg-white p-2 mt-3 rounded-full text-black disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer">
 									<span class="loading-spinner mr-2"></span>
 									Create Account
 								</button>
@@ -100,53 +95,40 @@ import { Router } from '@angular/router';
 					</div>
 				</div>
 			</div>
-			<app-footer></app-footer>
 		</div>
 	`
 })
 export class SignUpComponent {
-	// Services per Dependency Injection holen
 	private authService = inject(AuthService);
 	private router = inject(Router);
 
-	// Eigenschaften für Ladezustand und Fehlermeldungen
 	isLoading = false;
 	errorMessage: string | null = null;
 
-	// Diese Methode wird beim Absenden des Formulars aufgerufen
 	onSubmit(form: NgForm): void {
-		// Formular-Validierung prüfen
 		if (!form.valid) {
 			console.log("Formular ist ungültig.");
-			return; // Beenden, wenn das Formular nicht gültig ist
+			return;
 		}
 
-		// Ladezustand starten und vorherige Fehlermeldungen zurücksetzen
 		this.isLoading = true;
 		this.errorMessage = null;
 
-		// Daten aus dem Formular extrahieren
 		const { name, username, email, password } = form.value;
 
-		// Den AuthService aufrufen, um den Benutzer zu registrieren
 		this.authService.register({ name, username, email, password }).subscribe({
-			// Erfolgsfall: Die Registrierung war erfolgreich
 			next: (response) => {
 				console.log('Registrierung erfolgreich!', response);
-				this.isLoading = false; // Ladezustand beenden
+				this.isLoading = false;
 
-				// Optional: Eine Erfolgsmeldung anzeigen
 				alert('Dein Account wurde erfolgreich erstellt! Bitte logge dich nun ein.');
 
-				// Nach erfolgreicher Registrierung zur Login-Seite navigieren
 				this.router.navigate(['/signIn']);
 			},
-			// Fehlerfall: Bei der Registrierung ist ein Fehler aufgetreten
 			error: (err) => {
 				console.error('Registrierung fehlgeschlagen!', err);
-				// Die Fehlermeldung vom Backend extrahieren (falls vorhanden) oder eine Standardmeldung setzen
 				this.errorMessage = err.error?.message || 'Registrierung fehlgeschlagen. Bitte versuche es später erneut.';
-				this.isLoading = false; // Ladezustand beenden
+				this.isLoading = false;
 			}
 		});
 	}

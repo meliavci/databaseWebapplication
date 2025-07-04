@@ -16,7 +16,7 @@ import {Router} from '@angular/router';
 					[(ngModel)]="searchQuery"
 					(keyup.enter)="onSearch()"
 					placeholder="Search products..."
-					class="w-full pl-10 border-0 text-white text-sm"
+					class="w-full pl-10 border-0 outline-0 text-white text-sm"
 				>
 				<div class="absolute inset-y-0 left-0 pl-3 flex items-center">
 					<svg class="h-4 w-4 text-dark-400" stroke="currentColor" viewBox="0 0 24 24">

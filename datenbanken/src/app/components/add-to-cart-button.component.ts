@@ -1,14 +1,20 @@
-import {Component} from '@angular/core';
+import { Component, inject } from '@angular/core';
+import { CartService } from '../servicesFE/cart.service';
 
 @Component({
 	selector: 'app-add-to-cart-button',
 	standalone: true,
 	template: `
-		<div
-			class="bg-white text-black text-center justify-center items-center text-sm px-5 py-1 rounded-full"
-		>
-		Rent Now
-		</div>
-	`
+    <button (click)="addItemToCart()"
+            class="w-full bg-white text-black font-semibold py-1 rounded-full hover:bg-gray-200 transition-colors duration-300">
+      Add to Cart
+    </button>
+  `
 })
-export class AddToCartButtonComponent {}
+export class AddToCartButtonComponent {
+	private cartService = inject(CartService);
+
+	addItemToCart(): void {
+		this.cartService.addToCart({ product: 'Example Product' });
+	}
+}

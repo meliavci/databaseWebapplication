@@ -2,8 +2,6 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 
-import { HeaderComponent } from '../../components/header.component';
-import { FooterComponent } from '../../components/footer.component';
 import { CheckoutProgressComponent } from '../../components/checkout-progress.component';
 import { OrderSummaryComponent, CartItem } from '../../components/order-summary.component';
 import { StepPersonalDataComponent } from '../../components/step-personal-data.component';
@@ -17,8 +15,6 @@ import { StepConfirmationComponent } from '../../components/step-confirmation.co
 	imports: [
 		CommonModule,
 		RouterLink,
-		HeaderComponent,
-		FooterComponent,
 		CheckoutProgressComponent,
 		OrderSummaryComponent,
 		StepPersonalDataComponent,
@@ -28,16 +24,15 @@ import { StepConfirmationComponent } from '../../components/step-confirmation.co
 	],
 	template: `
 		<div class="bg-neutral-950 text-white min-h-screen">
-			<app-header></app-header>
 			<main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
 				<div class="mb-8">
-					<a routerLink="/cart"
+					<a routerLink="/category"
 						 class="text-white hover:text-primary-400 transition-colors duration-200 flex flex-row gap-2 items-center justify-start">
 						<svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
 							<path d="M15 19l-7-7 7-7" stroke="currentColor" stroke-width="2" stroke-linecap="round"
 										stroke-linejoin="round"/>
 						</svg>
-						<span>Back to Cart</span>
+						<span>Continue shopping</span>
 					</a>
 					<h1
 						class="text-4xl lg:text-5xl font-bold mt-4 block bg-gradient-to-r from-white to-blue-600 bg-clip-text text-transparent">
@@ -77,7 +72,6 @@ import { StepConfirmationComponent } from '../../components/step-confirmation.co
 				</div>
 
 			</main>
-			<app-footer></app-footer>
 		</div>
 	`
 })
