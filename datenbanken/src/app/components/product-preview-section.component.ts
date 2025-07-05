@@ -1,111 +1,55 @@
-import {Component} from '@angular/core';
-import {RouterLink} from '@angular/router';
+import { Component, inject, OnInit } from '@angular/core';
+import { RouterLink } from '@angular/router';
+import { ProductService } from '../servicesFE/product.service';
+import { Product } from '../../models/product.models';
+import { NgForOf, NgIf } from '@angular/common';
+import { ProductCardComponent } from './product-card.component';
 
 @Component({
 	selector: 'app-product-preview-section',
 	standalone: true,
 	imports: [
-		RouterLink
+		RouterLink,
+		NgForOf,
+		NgIf,
+		ProductCardComponent
 	],
 	template: `
 		<div class="bg-neutral-950 text-white">
-			<div class="mx-auto px-4 pt-30 pb-20 max-w-7xl sm:px-6 lg:px-8 py-12">
+			<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-20">
 				<div class="text-center mb-12">
-					<div class="text-center mb-20">
-						<h2 class="text-3xl md:text-4xl font-bold mb-4">
-							Most popular
-						</h2>
-						<p class="text-xl text-muted-foreground">
-							The currently most sought-after products
-						</p>
-					</div>
-					<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-						<a routerLink="/productDetail">
-							<div
-								class="group cursor-pointer transition-all duration-300 transform hover:-translate-y-2 overflow-hidden rounded-xl border border-neutral-700 p-6 items-start text-start">
-								<div class="relative aspect-square p-6">
-									<img src="/Product1.png" alt="Product"
-											 class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
-									/>
-									<div
-										class="absolute top-1 left-1 border border-neutral-700 px-5 py-1 rounded-full text-sm text-white">
-										Gaming
-									</div>
-								</div>
-								<div class="p-4">
-									<h3 class="font-semibold mb-2 text-md font-bold text-primary text-gray-400">Playstation 5</h3>
-									<p class="text-lg font-bold text-primary text-white">30€/month</p>
-								</div>
-							</div>
-						</a>
-						<a routerLink="/productDetail">
-							<div
-								class="group cursor-pointer transition-all duration-300 transform hover:-translate-y-2 overflow-hidden rounded-xl border border-neutral-700 p-6 items-start text-start">
-								<div class="relative aspect-square overflow-hidden">
-									<img src="/Product1.png" alt="Product"
-											 class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
-									/>
-									<div
-										class="absolute top-1 left-1 border border-neutral-700 px-5 py-1 rounded-full text-sm text-white">
-										Gaming
-									</div>
-								</div>
-								<div class="p-4">
-									<h3 class="font-semibold mb-2 text-md font-bold text-primary text-gray-400">Playstation 5</h3>
-									<p class="text-lg font-bold text-primary text-white">30€/month</p>
-								</div>
-							</div>
-						</a>
-						<a routerLink="/productDetail">
-							<div
-								class="group cursor-pointer transition-all duration-300 transform hover:-translate-y-2 overflow-hidden rounded-xl border border-neutral-700 p-6 items-start text-start">
-								<div class="relative aspect-square overflow-hidden">
-									<img src="/Product1.png" alt="Product"
-											 class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
-									/>
-									<div
-										class="absolute top-1 left-1 border border-neutral-700 px-5 py-1 rounded-full text-sm text-white">
-										Gaming
-									</div>
-								</div>
-								<div class="p-4">
-									<h3 class="font-semibold mb-2 text-md font-bold text-primary text-gray-400">Playstation 5</h3>
-									<p class="text-lg font-bold text-primary text-white">30€/month</p>
-								</div>
-							</div>
-						</a>
-						<a routerLink="/productDetail">
-							<div
-								class="group cursor-pointer transition-all duration-300 transform hover:-translate-y-2 overflow-hidden rounded-xl border border-neutral-700 p-6 items-start text-start">
-								<div class="relative aspect-square overflow-hidden">
-									<img src="/Product1.png" alt="Product"
-											 class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
-									/>
-									<div
-										class="absolute top-1 left-1 border border-neutral-700 px-5 py-1 rounded-full text-sm text-white">
-										Gaming
-									</div>
-								</div>
-								<div class="p-4">
-									<h3 class="font-semibold mb-2 text-md font-bold text-primary text-gray-400">Playstation 5</h3>
-									<p class="text-lg font-bold text-primary text-white">30€/month</p>
-								</div>
-							</div>
-						</a>
-					</div>
-					<div class="text-center mt-12 flex items-center justify-center">
-						<a routerLink="/category" size="large"
-										class="flex items-center gap-2 text-md px-5 py-1 rounded-full bg-neutral-950 border border-neutral-700 hover:scale-105 delay-100">
-							Show all products
-							<svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-								<path d="M6 12H18M18 12L13 7M18 12L13 17" stroke="#FFFF" stroke-width="2" stroke-linecap="round"
-											stroke-linejoin="round"/>
-							</svg>
-						</a>
-					</div>
+					<h2 class="text-3xl sm:text-4xl font-bold tracking-tight">Featured Products</h2>
+					<p class="mt-4 text-lg text-gray-400">Discover our most popular tech for rent.</p>
+				</div>
+				<div *ngIf="displayedProducts.length > 0"
+						 class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
+					<app-product-card *ngFor="let product of displayedProducts" [product]="product"></app-product-card>
+				</div>
+				<div class="mt-12 text-center">
+					<a routerLink="/category"
+						 class="inline-block bg-white text-black font-semibold px-6 py-3 rounded-full hover:bg-gray-200 transition-colors">
+						View All Products
+					</a>
 				</div>
 			</div>
 		</div>
 	`
 })
-export class ProductPreviewSectionComponent {}
+export class ProductPreviewSectionComponent implements OnInit {
+	private productService = inject(ProductService);
+	displayedProducts: Product[] = [];
+
+	ngOnInit(): void {
+		this.productService.getProducts().subscribe(products => {
+			this.displayedProducts = this.shuffleArray(products).slice(0, 4);
+		});
+	}
+
+	private shuffleArray(array: any[]): any[] {
+		for (let i = array.length - 1; i > 0; i--) {
+			const j = Math.floor(Math.random() * (i + 1));
+			[array[i], array[j]] = [array[j], array[i]];
+		}
+		return array;
+	}
+}

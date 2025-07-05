@@ -1,83 +1,75 @@
-import express, { Request, Response } from "express";
+import express, { Response } from "express";
 import { Pool } from "mysql2/promise";
-import { ShoppingCartService } from "../services/shopping_cart.service";
-import { CartItemService } from "../services/cart_item.service";
-import { authMiddleware } from "../middleware/auth.middleware"; // WICHTIG!
-
-// Definiere eine benutzerdefinierte Request-Typ, um `user` einzuschließen
-interface AuthenticatedRequest extends Request {
-  user?: { id: number };
-}
+import { authMiddleware, AuthenticatedRequest } from '../middleware/auth.middleware';
+import { ShoppingCartService } from '../services/shopping_cart.service';
+import { CartItemService } from '../services/cart_item.service';
 
 export function createCartRouter(db: Pool) {
-  const router = express.Router();
+	const router = express.Router();
+	const shoppingCartService = new ShoppingCartService(db);
+	const cartItemService = new CartItemService(db);
 
-  // Services instanziieren
-  const shoppingCartService = new ShoppingCartService(db);
-  const cartItemService = new CartItemService(db);
+	router.use(authMiddleware); // All cart operations require a logged-in user
 
-  router.use(express.json());
-	router.use(authMiddleware);
+	// GET /api/cart -> Get the current user's active cart
+	router.get('/', async (req: AuthenticatedRequest, res: Response) => {
+		try {
+			const userId = req.user!.id!;
+			const cart = await shoppingCartService.getOrCreateActiveCart(userId);
+			const items = await cartItemService.getCartItems(cart.id);
+			res.status(200).json({ ...cart, items });
+		} catch (err) {
+			console.error('Error getting cart:', err);
+			res.status(500).json({ error: "Fehler beim Abrufen des Warenkorbs" });
+		}
+	});
 
-  /**
-   * GET /cart
-   * Holt den gesamten aktuellen Warenkorb (inkl. Artikel) des angemeldeten Benutzers.
-   */
-  router.get('/', async (req: AuthenticatedRequest, res: Response) => {
-    try {
-      const userId = req.user!.id;
-      if (!userId) {
-        res.status(401).json({ error: "Nicht autorisiert." });
-        return
-      }
-      // 1. Hole den Warenkorb des Benutzers (oder erstelle einen neuen)
-      const cart = await shoppingCartService.getOrCreateActiveCart(userId);
+	// POST /api/cart/items -> Add an item to the cart
+	// @ts-ignore
+	router.post('/items', async (req: AuthenticatedRequest, res: Response) => {
+		try {
+			const userId = req.user!.id!;
+			const { productId, quantity, monthly_price, rental_start_date, rental_end_date } = req.body;
 
-      // 2. Hole alle Artikel für diesen Warenkorb
-      const items = await cartItemService.getCartItems(cart.id);
+			if (!productId || !quantity || monthly_price === undefined) {
+				return res.status(400).json({ error: "Fehlende Artikeldetails" });
+			}
 
-      // 3. Kombiniere und sende die Antwort
-      res.status(200).json({ ...cart, items });
+			const cart = await shoppingCartService.getOrCreateActiveCart(userId);
 
-    } catch (err) {
-      console.error("Fehler beim Abrufen des Warenkorbs:", err);
-      res.status(500).json({ error: "Interner Serverfehler" });
-    }
-  });
+			// Corrected argument order
+			const newItem = await cartItemService.addItem(
+				cart.id,
+				productId,
+				quantity,
+				monthly_price,
+				rental_start_date,
+				rental_end_date
+			);
 
-  /**
-   * POST /cart/items
-   * Fügt einen Artikel zum Warenkorb hinzu oder aktualisiert seine Menge.
-   * Body: { "itemId": number, "quantity": number }
-   */
-  router.post('/items', express.json(), async (req: AuthenticatedRequest, res: Response) => {
-    const { itemId, quantity } = req.body;
-    const userId = req.user!.id;
+			res.status(201).json(newItem);
+		} catch (err) {
+			console.error('Error adding item to cart:', err);
+			res.status(500).json({ error: "Fehler beim Hinzufügen des Artikels zum Warenkorb" });
+		}
+	});
 
-    if (!userId) {
-      res.status(401).json({ error: "Nicht autorisiert." });
-      return
-    }
-    if (!itemId || typeof quantity !== 'number') {
-      res.status(400).json({ error: "itemId und quantity sind erforderlich." });
-      return
-    }
+	// DELETE /api/cart/items/:itemId -> Remove an item from the cart
+	router.delete('/items/:itemId', async (req: AuthenticatedRequest, res: Response) => {
+		try {
+			const itemId = parseInt(req.params["itemId"], 10);
+			// Optional: Check if the item belongs to the user's cart before deleting
+			const success = await cartItemService.removeItem(itemId);
+			if (success) {
+				res.status(204).send(); // No Content
+			} else {
+				res.status(404).json({ error: "Artikel nicht im Warenkorb gefunden" });
+			}
+		} catch (err) {
+			console.error('Error removing item from cart:', err);
+			res.status(500).json({ error: "Fehler beim Entfernen des Artikels" });
+		}
+	});
 
-    try {
-      // 1. Hole den Warenkorb des Benutzers
-      const cart = await shoppingCartService.getOrCreateActiveCart(userId);
-
-      // 2. Übergebe die Aufgabe, den Artikel hinzuzufügen/zu aktualisieren, an den Item-Service
-      await cartItemService.addOrUpdateItem(cart.id, itemId, quantity);
-
-      // 3. Gib den kompletten, aktualisierten Warenkorb zurück (gut für das Frontend)
-      const updatedItems = await cartItemService.getCartItems(cart.id);
-      res.status(200).json({ ...cart, items: updatedItems });
-
-    } catch (err) {
-      console.error("Fehler beim Hinzufügen zum Warenkorb:", err);
-      res.status(500).json({ error: "Interner Serverfehler" });
-    }
-  });
-  return router;
+	return router;
 }

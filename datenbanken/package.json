@@ -33,11 +33,14 @@
     "bcryptjs": "^3.0.2",
     "dotenv": "^17.0.1",
     "express": "^5.1.0",
+    "http-proxy-middleware": "^3.0.5",
     "jsonwebtoken": "^9.0.2",
     "lucide-react": "^0.525.0",
     "mysql2": "^3.14.1",
+    "ngx-toastr": "^19.0.0",
     "rxjs": "~7.8.0",
-    "tslib": "^2.3.0"
+    "tslib": "^2.3.0",
+    "zone.js": "^0.15.1"
   },
   "devDependencies": {
     "@angular/build": "^20.0.4",
@@ -51,6 +54,8 @@
     "@types/jsonwebtoken": "^9.0.10",
     "@types/node": "^20.19.4",
     "autoprefixer": "^10.4.21",
+    "db-migrate": "^0.11.14",
+    "db-migrate-mysql": "^3.0.0",
     "jasmine-core": "~5.7.0",
     "karma": "~6.4.0",
     "karma-chrome-launcher": "~3.2.0",

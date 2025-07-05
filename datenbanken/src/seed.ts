@@ -1,17 +1,18 @@
-import fs from 'fs/promises';
-import path from 'path';
-import mysql from 'mysql2/promise';
 import dotenv from 'dotenv';
-import { Item } from './models/item.models'; // Stelle sicher, dass der Pfad zu deinem Model korrekt ist
+import path from 'path';
 
-const envPath = path.resolve(__dirname,  '..', '.env');dotenv.config({ path: envPath });
+// Load environment variables from the .env file in the project root
+dotenv.config({ path: path.resolve(__dirname, '..', '.env') });
 
-console.log(`[SEED] Lade .env-Datei von: ${envPath}`);
+import fs from 'fs/promises';
+import mysql from 'mysql2/promise';
+import { Product } from './models/product.models';
+
+console.log(`[SEED] Loading .env file from: ${path.resolve(__dirname, '..', '.env')}`);
 
 async function seedDatabase() {
-	let connection;
+	let connection: mysql.Connection | null = null;
 	try {
-		// Schritt 2: Validiere die Umgebungsvariablen und baue Pfade.
 		const dbConfig = {
 			host: process.env['DB_HOST'],
 			port: parseInt(process.env['DB_PORT'] || '3306'),
@@ -21,17 +22,16 @@ async function seedDatabase() {
 			certPath: process.env['DB_SSL_CERT_PATH'],
 		};
 
-		// Überprüfe, ob alle notwendigen Konfigurationen vorhanden sind.
+		// Validate that all required environment variables are loaded
 		for (const [key, value] of Object.entries(dbConfig)) {
 			if (!value) {
-				throw new Error(`Fehlende Umgebungsvariable in .env: ${key.replace('certPath', 'DB_SSL_CERT_PATH').toUpperCase()}`);
+				const envVarName = `DB_${key.replace('certPath', 'SSL_CERT_PATH').toUpperCase()}`;
+				throw new Error(`Missing environment variable in .env: ${envVarName}`);
 			}
 		}
 
-		// Wandle den relativen Zertifikatspfad aus der .env in einen absoluten Pfad um.
-		const absoluteCertPath = path.resolve(path.dirname(envPath), dbConfig.certPath!);
+		const absoluteCertPath = path.resolve(__dirname, '..', dbConfig.certPath!);
 
-		// Schritt 3: Stelle die Datenbankverbindung her.
 		connection = await mysql.createConnection({
 			host: dbConfig.host,
 			port: dbConfig.port,
@@ -41,52 +41,64 @@ async function seedDatabase() {
 			ssl: {
 				ca: await fs.readFile(absoluteCertPath),
 			},
+			multipleStatements: true, // Allow multiple statements for cleanup
 		});
 
-		console.log('[SEED] Erfolgreich mit der Datenbank für das Seeding verbunden.');
+		console.log('[SEED] Successfully connected to the database for seeding.');
 
-		// Schritt 4: Lese die Seed-Daten aus der JSON-Datei.
-		const jsonPath = path.join(__dirname, '..', 'src', 'filler.json');
-		console.log(`[SEED] Lese JSON-Daten von: ${jsonPath}`);
+		// Clear existing data from dependent tables first
+		console.log('[SEED] Deleting existing inventory items and products...');
+		await connection.query('SET FOREIGN_KEY_CHECKS = 0;');
+		await connection.query('TRUNCATE TABLE inventory_items;');
+		await connection.query('TRUNCATE TABLE products;');
+		await connection.query('SET FOREIGN_KEY_CHECKS = 1;');
+		console.log('[SEED] Existing data deleted.');
+
+		const jsonPath = path.join(__dirname, 'filler.json');
+		console.log(`[SEED] Reading JSON data from: ${jsonPath}`);
 		const jsonData = await fs.readFile(jsonPath, 'utf-8');
-		const items: Omit<Item, 'id'>[] = JSON.parse(jsonData);
+		const products: Omit<Product, 'id'>[] = JSON.parse(jsonData);
 
-		if (items.length === 0) {
-			console.log('[SEED] Keine Items in der JSON-Datei gefunden. Beende das Skript.');
+		if (products.length === 0) {
+			console.log('[SEED] No products found in JSON file. Exiting script.');
 			return;
 		}
 
-		console.log(`[SEED] ${items.length} Items zum Einfügen gefunden.`);
+		console.log(`[SEED] Found ${products.length} products to insert.`);
 
-		// Schritt 5: Bereite die Daten für einen effizienten Batch-Insert vor.
-		// mysql2 erwartet ein Array von Arrays für diese Art von Query.
-		const values = items.map(item => [
-			item.category,
-			item.description,
-			item.status,
-			item.price,
-			item.source,
-		]);
+		// Insert products and create corresponding inventory items
+		for (const product of products) {
+			const productQuery = 'INSERT INTO products (name, description, category, product_type, price_per_month, image_url) VALUES (?, ?, ?, ?, ?, ?)';
+			const [productResult] = await connection.execute(productQuery, [
+				product.name,
+				product.description,
+				product.category,
+				product.product_type,
+				product.price_per_month,
+				product.image_url,
+			]);
 
-		// Schritt 6: Führe den Batch-Insert-Query aus.
-		// Das '?' wird durch das gesamte `values`-Array ersetzt.
-		const query = 'INSERT INTO items (category, description, status, price, source) VALUES ?';
-		const [result] = await connection.query(query, [values]);
+			const productId = (productResult as mysql.ResultSetHeader).insertId;
+			console.log(`[SEED] Inserted product '${product.name}' with ID: ${productId}`);
 
-		console.log(`[SEED] Erfolgreich ${ (result as any).affectedRows } Items in die Datenbank eingefügt!`);
+			// Create a corresponding inventory item for the new product
+			const serialNumber = `SN-${productId}-${Date.now()}`;
+			const inventoryQuery = 'INSERT INTO inventory_items (product_id, serial_number, status) VALUES (?, ?, ?)';
+			await connection.execute(inventoryQuery, [productId, serialNumber, 'available']);
+			console.log(`[SEED] Created inventory item for product ID: ${productId}`);
+		}
+
+		console.log(`[SEED] Successfully inserted all products and their inventory items!`);
 
 	} catch (error) {
-		console.error('[SEED] Fehler während des Seeding-Prozesses:', error);
-		// Beende das Skript mit einem Fehlercode, um z.B. CI/CD-Pipelines zu stoppen.
+		console.error('[SEED] Error during the seeding process:', error);
 		process.exit(1);
 	} finally {
-		// Schritt 7: Schließe die Datenbankverbindung in jedem Fall.
 		if (connection) {
 			await connection.end();
-			console.log('[SEED] Datenbankverbindung geschlossen.');
+			console.log('[SEED] Database connection closed.');
 		}
 	}
 }
 
-// Führe die Hauptfunktion aus.
 seedDatabase();

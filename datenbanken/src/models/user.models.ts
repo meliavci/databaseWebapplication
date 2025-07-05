@@ -1,9 +1,10 @@
 export interface User{
   id?: number;
   username: string;
-  password: string; //evtl. zu PW Hash ändern für Datensicherheit
+  password_hash: string;
   email: string;
-  user_flag?: number;
-  name?: string;
+  role: "user" | "admin";
+  firstName?: string;
+	lastName?: string;
   address?: string;
 }

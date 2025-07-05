@@ -1,8 +1,11 @@
-import {Component} from '@angular/core';
+import {Component, inject, OnInit} from '@angular/core';
 import {AddToCartButtonComponent} from '../../components/add-to-cart-button.component';
 import {FormsModule} from '@angular/forms';
 import {DecimalPipe, NgClass, NgForOf, NgIf} from '@angular/common';
-import { CommonModule } from '@angular/common';
+import {ActivatedRoute} from '@angular/router';
+import {ProductService, ProductWithStock} from '../../servicesFE/product.service';
+import {Product} from '../../../models/product.models';
+import {InventoryService} from '../../servicesFE/inventory.service';
 
 
 @Component({
@@ -11,173 +14,132 @@ import { CommonModule } from '@angular/common';
 	imports: [
 		AddToCartButtonComponent,
 		FormsModule,
+		NgIf,
 		NgForOf,
 		NgClass,
-		DecimalPipe,
-		NgIf,
-		CommonModule
+		DecimalPipe
 	],
 	template: `
-		<div class="bg-neutral-950">
-			<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 text-white">
-				<div class="w-full flex flex-row">
-					<div class="w-1/2 flex items-center justify-center">
-						<img src="/Product1.png" alt="Product"
-								 class="w-80 h-auto object-cover overflow-hidden hover:scale-105 transition-transform duration-300"/>
+		<div *ngIf="product" class="bg-neutral-950 text-white min-h-screen">
+			<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+				<div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+					<!-- Image Column -->
+					<div class="flex justify-center items-start">
+						<div class="bg-neutral-900 rounded-xl p-18">
+							<img [src]="product.image_url || '/Product1.png'" [alt]="product.name"
+									 class="max-w-full h-auto object-contain rounded-lg">
+						</div>
 					</div>
-					<div class="w-1/2 flex items-center justify-between">
-						<div class="flex items-center justify-between">
-							<div class="space-y-6">
-								<div>
-									<div
-										class="inline-flex items-center gap-2 mb-2 border border-neutral-700 px-3 py-1 rounded-full text-xs text-white">
-										<div>Gaming</div>
-									</div>
-									<h1 class="text-3xl font-bold mb-4">Playstation 5</h1>
-									<p class="text-md text-gray-400 text-muted-foreground mb-4">Launched in 2020, PlayStation 5
-										introduced new
-										innovations that have taken play to extraordinary new heights, including an ultra-fast SSD, Tempest
-										3D
-										Audio
-										technology, and a generation of games that harness the console's lightning speed and graphical
-										capabilities
-										to create incredible new experiences. (Vertical stand sold separately)</p>
-								</div>
 
-								<div *ngIf="stock > 0; else outOfStock" class="flex items-center gap-2">
-									<svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-green-500" fill="none"
-											 viewBox="0 0 24 24"
-											 stroke="currentColor">
-										<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-													d="M5 13l4 4L19 7"/>
-									</svg>
-									<span class="text-sm text-white">{{ stock }} in stock</span>
-								</div>
-								<ng-template #outOfStock>
-									<div class="flex items-center gap-2">
-										<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-											<path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-										</svg>
-										<span class="text-sm text-red-500">Out of stock</span>
-									</div>
-								</ng-template>
+					<div>
+						<div class="inline-block text-sm text-gray-300 mb-2 border-blue-500 rounded-full px-2 border">{{ product.category }}</div>
+						<h1 class="text-4xl font-bold mb-4">{{ product.name }}</h1>
+						<p class="text-gray-300 text-md mb-6">{{ product.description }}</p>
 
-								<div class="p-6 border border-neutral-700 rounded-2xl">
-									<h3 class="font-semibold mb-4">Rental options</h3>
-									<div class="space-y-4">
-										<div>
-											<label for="rental-duration" class="block text-sm font-medium mb-2">Rental Duration</label>
-											<div class="relative">
-												<select
-													id="rental-duration"
-													[(ngModel)]="selectedOption"
-													class="w-full appearance-none rounded-md border border-neutral-700 bg-background px-3 py-2 text-sm placeholder:text-black focus:outline-none"
-													[ngClass]="{
-    'text-white': selectedOption,
-    'text-black': !selectedOption
-  }"
-												>
-													<option
-														*ngFor="let option of rentalOptions"
-														[ngValue]="option"
-														class="text-black bg-white"
-													>
-														{{ option.label }}
-													</option>
-												</select>
-											</div>
-										</div>
-										<div class="space-y-2">
-											<div class="flex justify-between items-center">
-												<span>Monthly price:</span>
-												<div class="text-right">
-               <span *ngIf="selectedOption.discount" class="text-sm text-muted-foreground line-through">
-                 {{ basePrice }}€
-               </span>
-													<span class="font-bold text-lg ml-2">
-                 {{ discountedMonthlyPrice | number:'1.2-2' }}€
-               </span>
-												</div>
-											</div>
-											<div class="flex justify-between items-center">
-												<span>Total price ({{ selectedOption.months }} months):</span>
-												<span class="font-bold text-xl text-primary">
-               {{ totalPrice | number:'1.2-2' }}€
-             </span>
-											</div>
-										</div>
-										<div class="gap-3 border-t py-4 border-neutral-700 w-full">
-											<app-add-to-cart-button></app-add-to-cart-button>
-										</div>
+						<div class="bg-neutral-900 rounded-xl p-6 mb-6">
+							<h2 class="text-xl font-semibold mb-4">Choose your rental plan</h2>
+							<div class="space-y-3">
+								<div *ngFor="let option of rentalOptions"
+										 (click)="selectedOption = option"
+										 [ngClass]="{'border-blue-500 bg-neutral-800': selectedOption === option, 'border-neutral-700': selectedOption !== option}"
+										 class="flex justify-between items-center py-2 px-4 border rounded-lg cursor-pointer transition-all">
+									<div>
+										<span class="font-medium">{{ option.label }}</span>
+										<span *ngIf="option.discount > 0"
+													class="ml-2 text-xs bg-blue-600 text-white px-2 py-0.5 rounded-full">
+                      Save {{ option.discount * 100 }}%
+                    </span>
 									</div>
-								</div>
-
-								<div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-									<div class="flex items-center gap-3 p-4 bg-muted/50 border border-neutral-700 rounded-xl">
-										<svg class="w-7 h-7" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-											<path
-												d="M9 12L11 14L15 9.99999M20 12C20 16.4611 14.54 19.6937 12.6414 20.683C12.4361 20.79 12.3334 20.8435 12.191 20.8712C12.08 20.8928 11.92 20.8928 11.809 20.8712C11.6666 20.8435 11.5639 20.79 11.3586 20.683C9.45996 19.6937 4 16.4611 4 12V8.21759C4 7.41808 4 7.01833 4.13076 6.6747C4.24627 6.37113 4.43398 6.10027 4.67766 5.88552C4.9535 5.64243 5.3278 5.50207 6.0764 5.22134L11.4382 3.21067C11.6461 3.13271 11.75 3.09373 11.857 3.07827C11.9518 3.06457 12.0482 3.06457 12.143 3.07827C12.25 3.09373 12.3539 3.13271 12.5618 3.21067L17.9236 5.22134C18.6722 5.50207 19.0465 5.64243 19.3223 5.88552C19.566 6.10027 19.7537 6.37113 19.8692 6.6747C20 7.01833 20 7.41808 20 8.21759V12Z"
-												stroke="#FFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-										</svg>
-										<div>
-											<div class="font-medium text-sm">Insured & Safe</div>
-											<div class="text-gray-400 text-xs text-muted-foreground">All devices are fully insured</div>
-										</div>
-									</div>
-									<div class="flex items-center gap-3 p-4 bg-muted/50 border border-neutral-700 rounded-xl">
-										<svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-											<path fill-rule="evenodd" clip-rule="evenodd"
-														d="M8.52832 16.826C8.53464 17.7132 8.01843 18.5166 7.22106 18.8607C6.42369 19.2047 5.50274 19.0213 4.88882 18.3962C4.27491 17.7712 4.08935 16.828 4.41891 16.0077C4.74847 15.1873 5.52803 14.652 6.39307 14.652C6.95731 14.6499 7.49925 14.8777 7.89969 15.2854C8.30013 15.6931 8.52625 16.2473 8.52832 16.826V16.826Z"
-														stroke="#FFFF" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-											<path fill-rule="evenodd" clip-rule="evenodd"
-														d="M18.7015 16.826C18.7078 17.7132 18.1916 18.5166 17.3942 18.8607C16.5969 19.2047 15.6759 19.0213 15.062 18.3962C14.4481 17.7712 14.2625 16.828 14.5921 16.0077C14.9216 15.1873 15.7012 14.652 16.5662 14.652C17.1305 14.6499 17.6724 14.8777 18.0728 15.2854C18.4733 15.6931 18.6994 16.2473 18.7015 16.826Z"
-														stroke="#FFFF" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-											<path
-												d="M14.1804 17.576C14.5946 17.576 14.9304 17.2403 14.9304 16.826C14.9304 16.4118 14.5946 16.076 14.1804 16.076V17.576ZM8.5254 16.076C8.11119 16.076 7.7754 16.4118 7.7754 16.826C7.7754 17.2403 8.11119 17.576 8.5254 17.576V16.076ZM13.4304 16.826C13.4304 17.2403 13.7662 17.576 14.1804 17.576C14.5946 17.576 14.9304 17.2403 14.9304 16.826H13.4304ZM14.9304 11.559C14.9304 11.1448 14.5946 10.809 14.1804 10.809C13.7662 10.809 13.4304 11.1448 13.4304 11.559H14.9304ZM14.1804 16.076C13.7662 16.076 13.4304 16.4118 13.4304 16.826C13.4304 17.2403 13.7662 17.576 14.1804 17.576V16.076ZM14.43 17.576C14.8442 17.576 15.18 17.2403 15.18 16.826C15.18 16.4118 14.8442 16.076 14.43 16.076V17.576ZM18.6972 16.0761C18.283 16.0779 17.9487 16.4151 17.9505 16.8293C17.9523 17.2435 18.2896 17.5779 18.7038 17.576L18.6972 16.0761ZM20.9625 14.485L21.7125 14.4816C21.7123 14.4384 21.7084 14.3954 21.7008 14.3529L20.9625 14.485ZM21.1772 11.4269C21.1042 11.0192 20.7146 10.7478 20.3068 10.8208C19.8991 10.8937 19.6277 11.2834 19.7007 11.6912L21.1772 11.4269ZM14.1794 6.12705C13.7652 6.12705 13.4294 6.46283 13.4294 6.87705C13.4294 7.29126 13.7652 7.62705 14.1794 7.62705V6.12705ZM17.7587 6.87705V7.62705C17.7637 7.62705 17.7688 7.627 17.7739 7.62689L17.7587 6.87705ZM19.3783 7.55055L19.9178 7.02951L19.9178 7.02951L19.3783 7.55055ZM20.0197 9.21805L19.27 9.19669C19.2685 9.24804 19.2723 9.2994 19.2814 9.34996L20.0197 9.21805ZM19.6996 11.691C19.7725 12.0987 20.1621 12.3702 20.5699 12.2974C20.9776 12.2245 21.2491 11.8349 21.1763 11.4271L19.6996 11.691ZM14.9284 6.87705C14.9284 6.46283 14.5927 6.12705 14.1784 6.12705C13.7642 6.12705 13.4284 6.46283 13.4284 6.87705H14.9284ZM13.4284 11.559C13.4284 11.9733 13.7642 12.309 14.1784 12.309C14.5927 12.309 14.9284 11.9733 14.9284 11.559H13.4284ZM13.4284 6.87705C13.4284 7.29126 13.7642 7.62705 14.1784 7.62705C14.5927 7.62705 14.9284 7.29126 14.9284 6.87705H13.4284ZM14.1784 6.07705L14.9285 6.07705L14.9284 6.07167L14.1784 6.07705ZM13.1137 5.00005L13.1137 5.75006L13.1187 5.75003L13.1137 5.00005ZM3.50512 5.00005L3.498 5.75005H3.50512V5.00005ZM2.75423 5.31075L2.22207 4.78225L2.22207 4.78225L2.75423 5.31075ZM2.4375 6.07505L1.6875 6.06834V6.07505H2.4375ZM2.4375 15.75L1.68747 15.75L1.68753 15.7568L2.4375 15.75ZM2.75423 16.5143L3.28638 15.9858L3.28638 15.9858L2.75423 16.5143ZM3.50512 16.825L3.50512 16.075L3.498 16.0751L3.50512 16.825ZM4.25783 17.575C4.67204 17.575 5.00783 17.2393 5.00783 16.825C5.00783 16.4108 4.67204 16.075 4.25783 16.075V17.575ZM14.1804 10.809C13.7662 10.809 13.4304 11.1448 13.4304 11.559C13.4304 11.9733 13.7662 12.309 14.1804 12.309V10.809ZM20.4399 12.309C20.8541 12.309 21.1899 11.9733 21.1899 11.559C21.1899 11.1448 20.8541 10.809 20.4399 10.809V12.309ZM14.1804 16.076H8.5254V17.576H14.1804V16.076ZM14.9304 16.826V11.559H13.4304V16.826H14.9304ZM14.1804 17.576H14.43V16.076H14.1804V17.576ZM18.7038 17.576C19.5117 17.5725 20.281 17.2397 20.8437 16.6573L19.765 15.615C19.4792 15.9108 19.0947 16.0743 18.6972 16.0761L18.7038 17.576ZM20.8437 16.6573C21.4058 16.0756 21.7162 15.2926 21.7125 14.4816L20.2125 14.4885C20.2145 14.9137 20.0514 15.3186 19.765 15.615L20.8437 16.6573ZM21.7008 14.3529L21.1772 11.4269L19.7007 11.6912L20.2242 14.6172L21.7008 14.3529ZM14.1794 7.62705H17.7587V6.12705H14.1794V7.62705ZM17.7739 7.62689C18.1691 7.61888 18.5544 7.7771 18.8389 8.07158L19.9178 7.02951C19.3477 6.43922 18.5622 6.1106 17.7434 6.1272L17.7739 7.62689ZM18.8389 8.07158C19.124 8.36679 19.282 8.77315 19.27 9.19669L20.7694 9.2394C20.7928 8.41808 20.4872 7.61907 19.9178 7.02951L18.8389 8.07158ZM19.2814 9.34996L19.6996 11.691L21.1763 11.4271L20.758 9.08613L19.2814 9.34996ZM13.4284 6.87705V11.559H14.9284V6.87705H13.4284ZM14.9284 6.87705V6.07705H13.4284V6.87705H14.9284ZM14.9284 6.07167C14.9213 5.07677 14.1245 4.24331 13.1088 4.25006L13.1187 5.75003C13.2708 5.74902 13.427 5.87963 13.4285 6.08242L14.9284 6.07167ZM13.1137 4.25005H3.50512V5.75005H13.1137V4.25005ZM3.51225 4.25008C3.02654 4.24547 2.5628 4.43917 2.22207 4.78225L3.28638 5.83925C3.3461 5.77912 3.42257 5.7493 3.498 5.75001L3.51225 4.25008ZM2.22207 4.78225C1.88199 5.12468 1.69183 5.58769 1.68753 6.06834L3.18747 6.08175C3.18832 5.98687 3.22602 5.90003 3.28638 5.83925L2.22207 4.78225ZM1.6875 6.07505V15.75H3.1875V6.07505H1.6875ZM1.68753 15.7568C1.69183 16.2374 1.88199 16.7004 2.22207 17.0428L3.28638 15.9858C3.22602 15.9251 3.18832 15.8382 3.18747 15.7433L1.68753 15.7568ZM2.22207 17.0428C2.5628 17.3859 3.02654 17.5796 3.51225 17.575L3.498 16.0751C3.42257 16.0758 3.3461 16.046 3.28638 15.9858L2.22207 17.0428ZM3.50512 17.575H4.25783V16.075H3.50512V17.575ZM14.1804 12.309H20.4399V10.809H14.1804V12.309Z"
-												fill="#FFF"/>
-										</svg>
-										<div>
-											<div class="font-medium text-sm">Free delivery</div>
-											<div class="text-gray-400 text-xs text-muted-foreground">Fast and free delivery</div>
-										</div>
-									</div>
-									<div class="flex items-center gap-3 p-4 bg-muted/50 border border-neutral-700 rounded-xl">
-										<svg class="w-9 h-9" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-											<path
-												d="M12 20.5001C16.6944 20.5001 20.5 16.6945 20.5 12.0001C20.5 9.17456 19.1213 6.67103 17 5.1255M13 22.4001L11 20.4001L13 18.4001M12 3.5001C7.30558 3.5001 3.5 7.30568 3.5 12.0001C3.5 14.8256 4.87867 17.3292 7 18.8747M11 5.6001L13 3.6001L11 1.6001"
-												stroke="#FFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-										</svg>
-										<div>
-											<div class="font-medium text-sm">Flexible rent</div>
-											<div class="text-gray-400 text-xs text-muted-foreground">Cancel, upgrade or extend at any time.
-											</div>
-										</div>
+									<div class="text-right">
+										<p class="font-semibold">{{ (basePrice * (1 - option.discount)) | number:'1.2-2' }}€ / month</p>
+										<p *ngIf="option.months > 1" class="text-sm text-gray-400">
+											Total {{ (basePrice * (1 - option.discount) * option.months) | number:'1.2-2' }}€
+										</p>
 									</div>
 								</div>
 							</div>
 						</div>
+
+						<div class="flex items-center justify-between mb-6">
+							<div class="text-3xl font-bold">
+								{{ totalPrice | number:'1.2-2' }}€
+								<span class="text-base font-normal text-gray-400">total price</span>
+							</div>
+							<div class="text-sm mb-6" [ngClass]="{'text-green-400': product.stock > 0, 'text-red-400': product.stock === 0}">
+								<ng-container *ngIf="product.stock > 0; else outOfStock">
+									In Stock: {{ product.stock }} items
+								</ng-container>
+								<ng-template #outOfStock>
+									Out of Stock
+								</ng-template>
+							</div>
+						</div>
+
+						<app-add-to-cart-button
+							[productId]="product.id"
+							[monthlyPrice]="discountedMonthlyPrice"
+							[rentalStartDate]="getRentalStartDate()"
+							[rentalEndDate]="getRentalEndDate()">
+						</app-add-to-cart-button>
 					</div>
 				</div>
 			</div>
 		</div>
 	`
 })
-export class ProductDetailComponent {
-	stock: number = 15;
-	basePrice: number = 30;
+export class ProductDetailComponent implements OnInit {
+	private route = inject(ActivatedRoute);
+	private productService = inject(ProductService);
+	private inventoryService = inject(InventoryService);
+
+	product: ProductWithStock | null = null;
+	availableStock: number | null = null;
+	basePrice: number = 0;
 	rentalOptions = [
-		{ value: '1 month', label: '1 Month', months: 1, discount: 0 },
-		{ value: '3 months', label: '3 Months (5% discount)', months: 3, discount: 0.05 },
-		{ value: '6 months', label: '6 Months (10% discount)', months: 6, discount: 0.10 },
-		{ value: '9 months', label: '9 Months (15% discount)', months: 9, discount: 0.15 },
+		{value: '1 month', label: '1 Month', months: 1, discount: 0},
+		{value: '3 months', label: '3 Months', months: 3, discount: 0.05},
+		{value: '6 months', label: '6 Months', months: 6, discount: 0.10},
+		{value: '12 months', label: '12 Months', months: 12, discount: 0.15}
 	];
 	selectedOption = this.rentalOptions[0];
 
+	ngOnInit(): void {
+		const productId = this.route.snapshot.paramMap.get('id');
+		if (productId) {
+			this.productService.getProduct(+productId).subscribe({
+				next: (product: ProductWithStock) => {
+					this.product = product;
+					this.basePrice = product.price_per_month;
+					this.availableStock = product.stock;
+				},
+				error: (err) => {
+					console.error('Failed to load product', err);
+					this.product = null;
+				}
+			});
+		}
+	}
+
 	get discountedMonthlyPrice(): number {
+		if (!this.product) return 0;
 		return this.basePrice * (1 - this.selectedOption.discount);
 	}
 
 	get totalPrice(): number {
 		return this.discountedMonthlyPrice * this.selectedOption.months;
+	}
+
+	private formatDate(date: Date): string {
+		return date.toISOString().split('T')[0];
+	}
+
+	getRentalStartDate(): string {
+		return this.formatDate(new Date());
+	}
+
+	getRentalEndDate(): string {
+		const startDate = new Date();
+		const endDate = new Date(startDate.setMonth(startDate.getMonth() + this.selectedOption.months));
+		return this.formatDate(endDate);
 	}
 }

@@ -1,10 +1,9 @@
 export interface Payment{
   id: number;
   order_id: number;
-  total_amount: number;
-  currency: string;
+  amount: number;
   method: string;
-  status: string;
-  transaction_id: string; //???? Doppelt gemoppelt?
+	status: 'pending' | 'completed' | 'failed';
+  transaction_id: string;
   paid_at: string;
 }

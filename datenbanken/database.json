@@ -1,0 +1,15 @@
+{
+	"dev": {
+		"driver": "mysql",
+		"host": "devicedrop-db-do-user-23636524-0.j.db.ondigitalocean.com",
+		"port": "25060",
+		"user": "doadmin",
+		"password": "AVNS_BDUoQohnDm1Xown1mLQ",
+		"database": "defaultdb",
+		"multipleStatements": true,
+		"ssl": {
+			"rejectUnauthorized": false,
+			"ca": "./ca-certificate.crt"
+		}
+	}
+}

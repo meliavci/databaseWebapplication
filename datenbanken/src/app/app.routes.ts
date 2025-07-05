@@ -7,7 +7,6 @@ import {SignInComponent} from './pages/signIn/sign-in.component';
 import {SignUpComponent} from './pages/signUp/sign-up.component';
 import {CheckoutComponent} from './pages/checkout/checkout.component';
 import {ProfileComponent} from './pages/profiles/profile.component';
-import {CartDrawerComponent} from './components/cart-drawer.component';
 
 export const routes: Routes = [
 	{
@@ -25,9 +24,14 @@ export const routes: Routes = [
 		title: "DeviceDrop - Category",
 	},
 	{
-		path: "productDetail",
+		path: "category/:categoryName", // Add this route
+		component: CategoryComponent,
+		title: "DeviceDrop - Category",
+	},
+	{
+		path: 'product/:id',
 		component: ProductDetailComponent,
-		title: "DeviceDrop - Product",
+		title: "DeviceDrop - Product Detail",
 	},
 	{
 		path: "howTo",

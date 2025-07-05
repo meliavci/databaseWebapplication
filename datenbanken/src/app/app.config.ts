@@ -1,23 +1,20 @@
-import { ApplicationConfig, LOCALE_ID, provideBrowserGlobalErrorListeners, provideZonelessChangeDetection, importProvidersFrom } from '@angular/core';
-import { provideRouter } from '@angular/router';
-import { HttpClientModule } from '@angular/common/http';
-import { provideAnimations } from '@angular/platform-browser/animations';
+import {ApplicationConfig, LOCALE_ID, provideZoneChangeDetection} from '@angular/core';
+import {provideRouter} from '@angular/router';
+import {routes} from './app.routes';
+import {provideHttpClient, withInterceptors} from '@angular/common/http';
+import {authInterceptor} from './servicesFE/auth.interceptor';
+import {registerLocaleData} from '@angular/common';
 import localeDe from '@angular/common/locales/de';
-
-import { routes } from './app.routes';
-import { provideClientHydration, withEventReplay } from '@angular/platform-browser';
-import { registerLocaleData } from '@angular/common';
+import {provideAnimations} from '@angular/platform-browser/animations';
 
 registerLocaleData(localeDe);
 
 export const appConfig: ApplicationConfig = {
 	providers: [
-		provideBrowserGlobalErrorListeners(),
-		provideZonelessChangeDetection(),
+		provideZoneChangeDetection({eventCoalescing: true}),
 		provideRouter(routes),
-		provideClientHydration(withEventReplay()),
-		importProvidersFrom(HttpClientModule),
+		provideHttpClient(withInterceptors([authInterceptor])),
 		provideAnimations(),
-		{ provide: LOCALE_ID, useValue: 'de-DE' }
+		{provide: LOCALE_ID, useValue: 'de-DE'}
 	]
 };

@@ -5,6 +5,7 @@ import {RouterLink} from '@angular/router';
 import{ AuthService } from '../../servicesFE/authFE';
 import { NgForm } from '@angular/forms';
 import { Router } from '@angular/router';
+import { NgIf } from '@angular/common';
 
 @Component({
 	selector: "app-sign-up",
@@ -12,7 +13,8 @@ import { Router } from '@angular/router';
 	imports: [
 		FormsModule,
 		LogoComponent,
-		RouterLink
+		RouterLink,
+		NgIf
 	],
 	template: `
 		<div class="bg-neutral-900 text-white">
@@ -71,13 +73,14 @@ import { Router } from '@angular/router';
 										ngModel
 										minlength="6"
 										class="w-full input border border-neutral-700 p-3 rounded-lg text-gray-400"
-										placeholder="Enter your password"
+										placeholder="Enter your password (min 6 characters)"
 									>
 								</div>
 								<button
 									type="submit"
+									[disabled]="!authForm.valid"
 									class="w-full btn-primary font-semibold bg-white p-2 mt-3 rounded-full text-black disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer">
-									<span class="loading-spinner mr-2"></span>
+									<span *ngIf="isLoading" class="loading-spinner mr-2"></span>
 									Create Account
 								</button>
 							</div>

@@ -1,55 +1,67 @@
-import { Pool } from "mysql2/promise";
-import { User } from "../models/user.models";
-import bcrypt from 'bcryptjs';
+import { Pool, RowDataPacket } from "mysql2/promise";
+import { User } from '../models/user.models';
 
-export class UserService{
-  constructor(private db: Pool) {}
+export class UserService {
+	constructor(private db: Pool) {}
 
-  async createUser(user: User): Promise<User>{
-    const [result] = await this.db.query(
-      'INSERT INTO users (username, password, email, user_flag, name, address) VALUES (?, ?, ?, ?, ?, ?)',
-      [user.username, user.password, user.email, user.user_flag, user.name, user.address]
-    );
-    user.id = (result as any).insertId;
-    return user;
-  }
+	async createUser(userData: Omit<User, 'id'>): Promise<User> {
+		// Destructure all required and optional properties from the single userData object
+		const { username, email, password_hash, role, firstName, lastName, address } = userData;
 
-  async findUserByEmail(email: string): Promise<User | null> {
-    const [rows] = await this.db.query('SELECT * FROM users WHERE email = ?', [email]);
-    if ((rows as any).length === 0) return null;
-    const userRow = (rows as any)[0];
-    return {
-      id: userRow.id,
-      username: userRow.username,
-      password: userRow.password,
-      email: userRow.email,
-      user_flag: userRow.user_flag,
-      name: userRow.name,
-      address: userRow.address,
-    };
-  }
-
-	async findUserByUsername(username: string): Promise<User | null> {
-		const [rows] = await this.db.query('SELECT * FROM users WHERE username = ?', [username]);
-		if ((rows as any).length === 0) return null;
-		const userRow = (rows as any)[0];
-		return {
-			id: userRow.id,
-			username: userRow.username,
-			password: userRow.password,
-			email: userRow.email,
-			user_flag: userRow.user_flag,
-			name: userRow.name,
-			address: userRow.address,
-		};
+		const [result] = await this.db.execute(
+			'INSERT INTO users (username, email, password_hash, role, firstName, lastName, address) VALUES (?, ?, ?, ?, ?, ?, ?)',
+			[username, email, password_hash, role, firstName || null, lastName || null, address || null]
+		);
+		const insertId = (result as any).insertId;
+		return { id: insertId, ...userData };
 	}
 
-  async updatePassword(userId: number, newPassword: string): Promise<void>{
-    const hashedPassword = await bcrypt.hash(newPassword, 10);
+	async findUserByEmail(email: string): Promise<User | null> {
+		const [rows] = await this.db.execute<RowDataPacket[]>('SELECT * FROM users WHERE email = ?', [email]);
+		if (rows.length === 0) {
+			return null;
+		}
+		return rows[0] as User;
+	}
 
-    await this.db.query(
-      "UPDATE users Set password = ? WHERE id = ?",
-      [hashedPassword, userId]
-    );
-  }
+	async findUserByUsername(username: string): Promise<User | null> {
+		const [rows] = await this.db.execute<RowDataPacket[]>('SELECT * FROM users WHERE username = ?', [username]);
+		if (rows.length === 0) {
+			return null;
+		}
+		return rows[0] as User;
+	}
+
+	async findUserById(id: number): Promise<User | null> {
+		const [rows] = await this.db.execute<RowDataPacket[]>('SELECT id, username, email, role, firstName, lastName, address FROM users WHERE id = ?', [id]);
+		if (rows.length === 0) {
+			return null;
+		}
+		return rows[0] as User;
+	}
+
+	async findUserByIdWithPassword(id: number): Promise<User | null> {
+		const [rows] = await this.db.execute<RowDataPacket[]>('SELECT * FROM users WHERE id = ?', [id]);
+		if (rows.length === 0) {
+			return null;
+		}
+		return rows[0] as User;
+	}
+
+	async findAll(): Promise<User[]> {
+		const [rows] = await this.db.execute<RowDataPacket[]>('SELECT id, username, email, role, firstName, lastName FROM users');
+		return rows as User[];
+	}
+
+	async updateRole(id: number, role: 'user' | 'admin'): Promise<User | null> {
+		const [result] = await this.db.execute('UPDATE users SET role = ? WHERE id = ?', [role, id]);
+		if ((result as any).affectedRows === 0) {
+			return null;
+		}
+		return this.findUserById(id);
+	}
+
+	async updatePassword(id: number | undefined, newPasswordHash: string): Promise<void> {
+		await this.db.execute('UPDATE users SET password_hash = ? WHERE id = ?', [newPasswordHash, id]);
+	}
 }
