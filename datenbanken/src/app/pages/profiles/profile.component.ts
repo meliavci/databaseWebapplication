@@ -1,4 +1,4 @@
-import {Component, inject, OnInit} from '@angular/core';
+import {Component, inject, OnDestroy, OnInit} from '@angular/core';
 import {CommonModule, CurrencyPipe, DatePipe} from '@angular/common';
 import {FormsModule} from '@angular/forms';
 import {AuthService} from '../../servicesFE/authFE';
@@ -7,6 +7,8 @@ import {User} from '../../../models/user.models';
 import {InventoryService} from '../../servicesFE/inventory.service';
 import {ProductService, ProductWithStock} from '../../servicesFE/product.service';
 import {OrderService} from '../../servicesFE/order.service';
+import { WebSocketService } from '../../servicesFE/websocket.service';
+import { Subscription } from 'rxjs';
 
 interface OrderItem {
 	id: number;
@@ -230,13 +232,16 @@ interface Order {
 		</div>
 	`
 })
-export class ProfileComponent implements OnInit {
+export class ProfileComponent implements OnInit, OnDestroy {
 	activeTab: string = 'profile';
 	private authService = inject(AuthService);
 	private userService = inject(UserService);
 	private inventoryService = inject(InventoryService);
 	private productService = inject(ProductService);
 	private orderService = inject(OrderService);
+	private webSocketService = inject(WebSocketService);
+	private roleUpdateSub: Subscription | undefined;
+
 	inventory: ProductWithStock[] = [];
 
 	currentUser: User | null = null;
@@ -263,8 +268,19 @@ export class ProfileComponent implements OnInit {
 	availableTabs = this.baseTabs;
 
 	ngOnInit(): void {
+		this.webSocketService.connect();
 		this.loadUserProfile();
 		this.loadOrders();
+
+		this.roleUpdateSub = this.webSocketService.roleUpdate$.subscribe(() => {
+			console.log('Role update detected, reloading profile...');
+			this.loadUserProfile();
+		});
+	}
+
+	ngOnDestroy(): void {
+		this.webSocketService.disconnect();
+		this.roleUpdateSub?.unsubscribe();
 	}
 
 	get fullName(): string {

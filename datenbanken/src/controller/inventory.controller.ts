@@ -7,9 +7,8 @@ import { InventoryService } from "../services/inventory.service";
 export function createInventoryRouter(db: Pool) {
 	const router = express.Router();
 	const productService = new ProductService(db);
-	const inventoryService = new InventoryService(db); // Initialize InventoryService
+	const inventoryService = new InventoryService(db);
 
-	// GET /api/inventory/stock/:productId -> Get available stock for a product
 	router.get('/stock/:productId', async (req: Request, res: Response) => {
 		try {
 			const productId = parseInt(req.params.productId, 10);

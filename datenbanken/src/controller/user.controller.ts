@@ -3,8 +3,15 @@ import { Pool } from "mysql2/promise";
 import { UserService } from "../services/user.service";
 import { authMiddleware, AuthenticatedRequest } from "../middleware/auth.middleware";
 import bcrypt from "bcryptjs";
+import { Server } from "socket.io";
 
-export function createUserRouter(db: Pool) {
+// Define an interface for the objects we'll pass to the router
+interface SocketManager {
+	io: Server;
+	userSockets: Map<number, string>;
+}
+
+export function createUserRouter(db: Pool, socketManager: SocketManager) {
 	const router = express.Router();
 	const userService = new UserService(db);
 
@@ -70,6 +77,14 @@ export function createUserRouter(db: Pool) {
 			if (!updatedUser) {
 				return res.status(404).json({ error: "User not found" });
 			}
+
+			// Emit event to the specific user whose role was changed
+			const userSocketId = socketManager.userSockets.get(userId);
+			if (userSocketId) {
+				socketManager.io.to(userSocketId).emit('role_updated', { newRole: role });
+				console.log(`Sent 'role_updated' event to user ${userId}`);
+			}
+
 			res.json(updatedUser);
 		} catch (err) {
 			console.error(err);
