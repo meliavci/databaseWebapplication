@@ -6,7 +6,7 @@ import {Component} from '@angular/core';
 	],
 	standalone: true,
 	template: `
-		<div class="bg-neutral-950 text-white">
+		<div class="bg-neutral-950 text-white min-h-screen">
 			<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
 				<div class="max-w-4xl mx-auto text-center space-y-8">
 					<h1 class="text-4xl md:text-6xl lg:text-7xl font-bold leading-tight">

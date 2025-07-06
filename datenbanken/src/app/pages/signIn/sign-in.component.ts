@@ -5,6 +5,7 @@ import {RouterLink} from '@angular/router';
 import { NgForm } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../../servicesFE/authFE';
+import {HttpErrorResponse} from '@angular/common/http';
 
 @Component({
 	selector: "app-sign-in",
@@ -15,7 +16,7 @@ import { AuthService } from '../../servicesFE/authFE';
 		RouterLink
 	],
 	template: `
-		<div class="bg-neutral-900 text-white">
+		<div class="bg-neutral-900 text-white min-h-screen">
 			<div class="flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
 				<div class="max-w-md w-full">
 					<div class="card border border-neutral-700 rounded-3xl p-8 bg-neutral-950 shadow-xl">
@@ -83,20 +84,20 @@ export class SignInComponent {
 
 	onSubmit(form: NgForm): void {
 		if (form.invalid) {
-			return;
+			const errorMessage = 'Ungültige Anmeldedaten oder Serverfehler.';
+			alert(`Fehler beim Login: ${errorMessage}`);
 		}
 
 		console.log('Sende Login-Daten:', form.value);
 
 		this.authService.login(form.value).subscribe({
-			next: (response: any) => {
-				console.log('Backend-Antwort (Login):', response);
-				alert('Login erfolgreich!');
+			next: () => {
 				this.router.navigate(['/']);
 			},
-			error: (err: { error: { error: any; }; }) => {
+			error: (err: HttpErrorResponse) => {
 				console.error('Login fehlgeschlagen:', err);
-				alert(`Fehler beim Login: ${err.error.error || 'Ungültige Anmeldedaten'}`);
+				const errorMessage = err.error?.error || 'Invalid login information or server error.';
+				alert(`Login error: ${errorMessage}`);
 			}
 		});
 	}

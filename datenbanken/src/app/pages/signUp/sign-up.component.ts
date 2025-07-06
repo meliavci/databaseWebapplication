@@ -17,7 +17,7 @@ import { NgIf } from '@angular/common';
 		NgIf
 	],
 	template: `
-		<div class="bg-neutral-900 text-white">
+		<div class="bg-neutral-900 text-white min-h-screen">
 			<div class="flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
 				<div class="max-w-md w-full">
 					<div class="card border border-neutral-700 rounded-3xl p-8 bg-neutral-950 shadow-xl">
@@ -124,7 +124,7 @@ export class SignUpComponent {
 				console.log('Registrierung erfolgreich!', response);
 				this.isLoading = false;
 
-				alert('Dein Account wurde erfolgreich erstellt! Bitte logge dich nun ein.');
+				alert('Your account has been successfully created! Please log in now.');
 
 				this.router.navigate(['/signIn']);
 			},
