@@ -112,6 +112,7 @@ export class InventoryService {
 	}
 
 	async findAvailableItems(productId: number, quantity: number): Promise<InventoryItem[]> {
+		// @ts-ignore
 		const [rows] = await this.db.query<InventoryItem[]>(
 			`SELECT * FROM inventory_items WHERE product_id = ? AND status = 'available' LIMIT ?`,
 			[productId, quantity]

@@ -241,6 +241,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
 	private orderService = inject(OrderService);
 	private webSocketService = inject(WebSocketService);
 	private roleUpdateSub: Subscription | undefined;
+	private subscriptions = new Subscription();
 
 	inventory: ProductWithStock[] = [];
 
@@ -268,19 +269,33 @@ export class ProfileComponent implements OnInit, OnDestroy {
 	availableTabs = this.baseTabs;
 
 	ngOnInit(): void {
-		this.webSocketService.connect();
+		const token = this.authService.getToken();
+		if (token) {
+			this.webSocketService.connect(token);
+		}
 		this.loadUserProfile();
 		this.loadOrders();
 
-		this.roleUpdateSub = this.webSocketService.roleUpdate$.subscribe(() => {
+		const roleUpdateSub = this.webSocketService.roleUpdate$.subscribe((data: { newRole: 'user' | 'admin', token: string }) => {
 			console.log('Role update detected, reloading profile...');
+			this.authService.updateToken(data.token);
 			this.loadUserProfile();
 		});
+
+		const userCreatedSub = this.webSocketService.userCreated$.subscribe((newUser: User) => {
+			if (this.isAdmin) {
+				console.log('New user detected, adding to list:', newUser);
+				this.allUsers = [newUser, ...this.allUsers];
+			}
+		});
+
+		this.subscriptions.add(roleUpdateSub);
+		this.subscriptions.add(userCreatedSub);
 	}
 
 	ngOnDestroy(): void {
 		this.webSocketService.disconnect();
-		this.roleUpdateSub?.unsubscribe();
+		this.subscriptions.unsubscribe();
 	}
 
 	get fullName(): string {
@@ -291,13 +306,19 @@ export class ProfileComponent implements OnInit, OnDestroy {
 	loadUserProfile(): void {
 		this.userService.getProfile().subscribe({
 			next: (user) => {
+				const wasAdmin = this.isAdmin;
 				this.currentUser = user;
 				this.viewRole = user.role;
 				this.isAdmin = user.role === 'admin';
 				this.updateTabs();
-				if (this.viewRole === 'admin') {
+
+				if (this.isAdmin) {
 					this.loadAllUsers();
 					this.loadInventory();
+					// If the user was just promoted to admin, switch to the inventory tab
+					if (!wasAdmin) {
+						this.activeTab = 'admin-inventory';
+					}
 				}
 			},
 			error: (err) => {
@@ -399,11 +420,14 @@ export class ProfileComponent implements OnInit, OnDestroy {
 		}
 
 		this.productService.updateStock(item.id, amount).subscribe({
-			next: (updatedInventory) => {
-				this.inventory = updatedInventory;
+			next: () => {
+				// Reload the entire inventory to reflect the change
+				this.loadInventory();
 			},
-			error: (err) => {
+			error: (err: any) => {
 				console.error(`Failed to update stock for ${item.name}`, err);
+				alert('Failed to update stock. See console for details.');
+				// Optionally reload inventory even on error to sync state
 				this.loadInventory();
 			}
 		});

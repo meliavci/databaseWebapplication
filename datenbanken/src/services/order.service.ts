@@ -21,6 +21,7 @@ export class OrderService {
 	}
 
 	async getUserOrders(userId: number): Promise<any[]> {
+		// @ts-ignore
 		const [orders] = await this.db.query<RentalOrder[]>(
 			`SELECT * FROM rental_orders WHERE user_id = ? ORDER BY order_date DESC`,
 			[userId]
@@ -66,6 +67,7 @@ export class OrderService {
 			// 2. Process each item in the cart
 			for (const item of cart.items) {
 				// Find available inventory items for the product
+				// @ts-ignore
 				const [availableItems] = await connection.query<InventoryItem[]>(
 					`SELECT id FROM inventory_items WHERE product_id = ? AND status = 'available' LIMIT ? FOR UPDATE`,
 					[item.product_id, item.quantity]

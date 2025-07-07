@@ -35,11 +35,11 @@ async function startServer() {
 	app.use(express.json());
 
 	const apiRouter = express.Router();
-	apiRouter.use('/auth', createAuthRouter(dbPool));
+	const socketManager = { io, userSockets };
+	apiRouter.use('/auth', createAuthRouter(dbPool, socketManager));
 	apiRouter.use('/cart', createCartRouter(dbPool));
 	apiRouter.use('/products', createProductRouter(dbPool));
-	// Pass the socket manager to the user router
-	apiRouter.use('/users', createUserRouter(dbPool, { io, userSockets }));
+	apiRouter.use('/users', createUserRouter(dbPool, socketManager));
 	apiRouter.use('/inventory', createInventoryRouter(dbPool));
 	apiRouter.use('/orders', createOrderRouter(dbPool));
 
@@ -48,14 +48,20 @@ async function startServer() {
 	// Socket.IO connection logic
 	io.on('connection', (socket) => {
 		console.log(`Socket connected: ${socket.id}`);
-		const token = socket.handshake.auth.token;
+		const token = socket.handshake.auth['token'];
 
 		if (token && process.env['JWT_SECRET']) {
 			try {
-				const decoded = jwt.verify(token, process.env['JWT_SECRET']) as { id: number };
+				const decoded = jwt.verify(token, process.env['JWT_SECRET']) as { id: number, role: string };
 				const userId = decoded.id;
 				userSockets.set(userId, socket.id);
 				console.log(`User ${userId} registered with socket ${socket.id}`);
+
+				// Add admin users to a special room
+				if (decoded.role === 'admin') {
+					socket.join('admin_room');
+					console.log(`Admin user ${userId} joined 'admin_room'`);
+				}
 
 				socket.on('disconnect', () => {
 					if (userSockets.get(userId) === socket.id) {

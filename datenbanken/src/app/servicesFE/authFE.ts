@@ -1,14 +1,7 @@
-import { inject, Injectable, PLATFORM_ID } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { BehaviorSubject, Observable, of, tap } from 'rxjs';
-import { Router } from '@angular/router';
-import { isPlatformBrowser } from '@angular/common';
-
-export interface User {
-	id: number;
-	username: string;
-	email: string;
-}
+import {inject, Injectable} from '@angular/core';
+import {HttpClient, HttpHeaders} from '@angular/common/http';
+import {BehaviorSubject, Observable, tap} from 'rxjs';
+import {Router} from '@angular/router';
 
 @Injectable({
 	providedIn: 'root'
@@ -16,41 +9,20 @@ export interface User {
 export class AuthService {
 	private http = inject(HttpClient);
 	private router = inject(Router);
-	private platformId = inject(PLATFORM_ID);
 	private apiUrl = 'http://localhost:3000/api/auth';
 
-	private isLoggedIn = new BehaviorSubject<boolean>(this.hasToken());
-	isLoggedIn$ = this.isLoggedIn.asObservable();
-
-	private currentUser = new BehaviorSubject<User | null>(null);
-	currentUser$ = this.currentUser.asObservable();
-
-	constructor() {
-		if (this.isBrowser()) {
-			this.loadCurrentUser();
-		}
-	}
-
-	private isBrowser(): boolean {
-		return isPlatformBrowser(this.platformId);
-	}
+	private isLoggedInSubject = new BehaviorSubject<boolean>(this.hasToken());
+	public isLoggedIn$ = this.isLoggedInSubject.asObservable();
 
 	private hasToken(): boolean {
-		if (this.isBrowser()) {
+		if (typeof window !== 'undefined') {
 			return !!localStorage.getItem('auth_token');
 		}
 		return false;
 	}
 
-	private loadCurrentUser(): void {
-		const token = this.getToken();
-		if (token) {
-			this.getCurrentUser().subscribe();
-		}
-	}
-
 	getToken(): string | null {
-		if (this.isBrowser()) {
+		if (typeof window !== 'undefined') {
 			return localStorage.getItem('auth_token');
 		}
 		return null;
@@ -63,30 +35,36 @@ export class AuthService {
 	login(credentials: any): Observable<any> {
 		return this.http.post<{ token: string }>(`${this.apiUrl}/login`, credentials).pipe(
 			tap(response => {
-				if (this.isBrowser()) {
+				if (typeof window !== 'undefined') {
 					localStorage.setItem('auth_token', response.token);
-					this.isLoggedIn.next(true);
-					this.loadCurrentUser();
+					this.isLoggedInSubject.next(true);
+					console.log('Login successful, token stored.');
 				}
 			})
 		);
 	}
 
 	logout(): void {
-		if (this.isBrowser()) {
+		if (typeof window !== 'undefined') {
 			localStorage.removeItem('auth_token');
-			this.isLoggedIn.next(false);
-			this.currentUser.next(null);
+			this.isLoggedInSubject.next(false);
 			this.router.navigate(['/signIn']);
+			console.log('User logged out, token removed.');
 		}
 	}
 
-	getCurrentUser(): Observable<User | null> {
-		if (!this.isBrowser() || !this.hasToken()) {
-			return of(null);
+	updateToken(token: string): void {
+		if (typeof window !== 'undefined') {
+			localStorage.setItem('auth_token', token);
+			this.isLoggedInSubject.next(true); // Ensure logged-in state is still true
+			console.log('Auth token updated.');
 		}
-		return this.http.get<User>(`${this.apiUrl}/me`).pipe(
-			tap(user => this.currentUser.next(user))
-		);
+	}
+
+	getAuthHeaders(): HttpHeaders {
+		const token = this.getToken();
+		return new HttpHeaders({
+			'Authorization': `Bearer ${token}`
+		});
 	}
 }

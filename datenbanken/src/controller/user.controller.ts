@@ -4,6 +4,7 @@ import { UserService } from "../services/user.service";
 import { authMiddleware, AuthenticatedRequest } from "../middleware/auth.middleware";
 import bcrypt from "bcryptjs";
 import { Server } from "socket.io";
+import jwt from 'jsonwebtoken';
 
 // Define an interface for the objects we'll pass to the router
 interface SocketManager {
@@ -54,7 +55,11 @@ export function createUserRouter(db: Pool, socketManager: SocketManager) {
 	});
 
 	// List all users (admin only)
+	// @ts-ignore
 	router.get('/', authMiddleware, async (req: AuthenticatedRequest, res) => {
+		if (req.user?.role !== 'admin') {
+			return res.status(403).json({ error: 'Access denied' });
+		}
 		try {
 			const users = await userService.findAll();
 			res.json(users);
@@ -67,6 +72,9 @@ export function createUserRouter(db: Pool, socketManager: SocketManager) {
 	// Update user role (admin only)
 	// @ts-ignore
 	router.patch('/:id/role', authMiddleware, async (req: AuthenticatedRequest, res) => {
+		if (req.user?.role !== 'admin') {
+			return res.status(403).json({ error: 'Access denied' });
+		}
 		const { role } = req.body;
 		const userId = Number(req.params["id"]);
 		if (!role || !['user', 'admin'].includes(role)) {
@@ -81,8 +89,15 @@ export function createUserRouter(db: Pool, socketManager: SocketManager) {
 			// Emit event to the specific user whose role was changed
 			const userSocketId = socketManager.userSockets.get(userId);
 			if (userSocketId) {
-				socketManager.io.to(userSocketId).emit('role_updated', { newRole: role });
-				console.log(`Sent 'role_updated' event to user ${userId}`);
+				const payload = { id: updatedUser.id, email: updatedUser.email, role: updatedUser.role };
+				const secret = process.env['JWT_SECRET'];
+				if (secret) {
+					const newToken = jwt.sign(payload, secret, { expiresIn: '1h' });
+					socketManager.io.to(userSocketId).emit('role_updated', { newRole: role, token: newToken });
+					console.log(`Sent 'role_updated' event with new token to user ${userId}`);
+				} else {
+					console.error('JWT_SECRET is not configured. Cannot issue new token.');
+				}
 			}
 
 			res.json(updatedUser);
