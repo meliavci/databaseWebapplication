@@ -13,6 +13,7 @@ import { createUserRouter } from './controller/user.controller';
 import { createInventoryRouter } from './controller/inventory.controller';
 import { createOrderRouter } from './controller/order.controller';
 
+
 dotenv.config({ path: path.resolve(__dirname, '..', '.env') });
 
 // Maps userId to socketId for targeted communication
@@ -40,7 +41,7 @@ async function startServer() {
 	apiRouter.use('/cart', createCartRouter(dbPool));
 	apiRouter.use('/products', createProductRouter(dbPool));
 	apiRouter.use('/users', createUserRouter(dbPool, socketManager));
-	apiRouter.use('/inventory', createInventoryRouter(dbPool));
+	apiRouter.use('/inventory', createInventoryRouter(dbPool, socketManager));
 	apiRouter.use('/orders', createOrderRouter(dbPool));
 
 	app.use('/api', apiRouter);

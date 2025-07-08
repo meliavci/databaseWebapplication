@@ -289,8 +289,18 @@ export class ProfileComponent implements OnInit, OnDestroy {
 			}
 		});
 
+		const stockUpdateSub = this.webSocketService.stockUpdate$.subscribe(update => {
+			if (this.isAdmin) {
+				const item = this.inventory.find(p => p.id === update.productId);
+				if (item) {
+					item.stock = update.stock;
+				}
+			}
+		});
+
 		this.subscriptions.add(roleUpdateSub);
 		this.subscriptions.add(userCreatedSub);
+		this.subscriptions.add(stockUpdateSub);
 	}
 
 	ngOnDestroy(): void {

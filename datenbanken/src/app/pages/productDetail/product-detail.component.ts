@@ -6,6 +6,8 @@ import {ActivatedRoute} from '@angular/router';
 import {ProductService, ProductWithStock} from '../../servicesFE/product.service';
 import {Product} from '../../../models/product.models';
 import {InventoryService} from '../../servicesFE/inventory.service';
+import {WebSocketService} from '../../servicesFE/websocket.service';
+import {filter, Subscription} from 'rxjs';
 
 
 @Component({
@@ -91,13 +93,14 @@ import {InventoryService} from '../../servicesFE/inventory.service';
 	`
 })
 export class ProductDetailComponent implements OnInit {
+	product: ProductWithStock | null = null;
+	basePrice: number = 0;
+
 	private route = inject(ActivatedRoute);
 	private productService = inject(ProductService);
-	private inventoryService = inject(InventoryService);
+	private webSocketService = inject(WebSocketService);
+	private stockUpdateSubscription: Subscription | undefined;
 
-	product: ProductWithStock | null = null;
-	availableStock: number | null = null;
-	basePrice: number = 0;
 	rentalOptions = [
 		{value: '1 month', label: '1 Month', months: 1, discount: 0},
 		{value: '3 months', label: '3 Months', months: 3, discount: 0.05},
@@ -113,7 +116,7 @@ export class ProductDetailComponent implements OnInit {
 				next: (product: ProductWithStock) => {
 					this.product = product;
 					this.basePrice = product.price_per_month;
-					this.availableStock = product.stock;
+					this.listenForStockUpdates(+productId);
 				},
 				error: (err) => {
 					console.error('Failed to load product', err);
@@ -121,6 +124,25 @@ export class ProductDetailComponent implements OnInit {
 				}
 			});
 		}
+	}
+
+	ngOnDestroy(): void {
+		if (this.stockUpdateSubscription) {
+			this.stockUpdateSubscription.unsubscribe();
+		}
+	}
+
+	listenForStockUpdates(productId: number): void {
+		this.stockUpdateSubscription = this.webSocketService.stockUpdate$
+			.pipe(
+				filter(update => update.productId === productId)
+			)
+			.subscribe(update => {
+				if (this.product) {
+					this.product.stock = update.stock;
+					console.log(`Real-time stock update for product ${productId}: ${update.stock}`);
+				}
+			});
 	}
 
 	get discountedMonthlyPrice(): number {

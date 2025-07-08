@@ -5,8 +5,6 @@ import { AuthService } from '../servicesFE/authFE';
 import { Product } from '../../models/product.models';
 import { Router } from '@angular/router';
 import {ProductService, ProductWithStock} from '../servicesFE/product.service';
-import {WebSocketService} from '../servicesFE/websocket.service';
-import {Subscription} from 'rxjs';
 
 @Component({
 	selector: 'app-add-to-cart-button',
