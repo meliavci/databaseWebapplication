@@ -16,7 +16,6 @@ import {AuthService} from '../servicesFE/authFE';
 				 [ngClass]="{'opacity-100': isOpen, 'opacity-0': !isOpen}">
 		</div>
 
-		<!-- Cart Drawer -->
 		<div
 			class="fixed top-0 right-0 h-full w-full max-w-md bg-neutral-900 text-white shadow-2xl transform transition-transform duration-300 ease-in-out z-60"
 			[ngClass]="{'translate-x-0': isOpen, 'translate-x-full': !isOpen}">
@@ -28,7 +27,6 @@ import {AuthService} from '../servicesFE/authFE';
 					<button (click)="close()" class="text-gray-400 hover:text-white">&times;</button>
 				</div>
 
-				<!-- Item List -->
 				<div class="flex-grow overflow-y-auto p-4">
 					<div *ngIf="!isLoggedIn" class="text-center text-gray-400 py-10">
 						<p>Please <a routerLink="/signIn" (click)="close()" class="text-blue-400 hover:underline">sign in</a> to view your cart.</p>
@@ -63,7 +61,6 @@ import {AuthService} from '../servicesFE/authFE';
 					</ul>
 				</div>
 
-				<!-- Footer -->
 				<div *ngIf="isLoggedIn && cartItems.length > 0" class="p-4 border-t border-neutral-700">
 					<div class="flex justify-between items-center mb-4">
 						<span class="text-lg font-semibold">Total</span>

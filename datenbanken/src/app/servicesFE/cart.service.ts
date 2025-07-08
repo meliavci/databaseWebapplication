@@ -34,8 +34,8 @@ export class CartService {
 	addToCart(item: CartItemPayload): Observable<any> {
 		return this.http.post(`${this.apiUrl}/items`, item).pipe(
 			tap(() => {
-				this.cartUpdateSource.next(); // Notify that cart has changed
-				this.openCart(); // Open the drawer
+				this.cartUpdateSource.next();
+				this.openCart();
 			})
 		);
 	}

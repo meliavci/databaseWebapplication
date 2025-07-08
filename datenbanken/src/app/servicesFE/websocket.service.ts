@@ -1,5 +1,3 @@
-// datenbanken/src/app/servicesFE/websocket.service.ts
-
 import { Injectable } from '@angular/core';
 import { io, Socket } from 'socket.io-client';
 import { Subject } from 'rxjs';
@@ -18,7 +16,6 @@ export class WebSocketService {
 	private userCreatedSource = new Subject<User>();
 	userCreated$ = this.userCreatedSource.asObservable();
 
-	// Add new Subject for stock updates
 	private stockUpdateSource = new Subject<{ productId: number, stock: number }>();
 	stockUpdate$ = this.stockUpdateSource.asObservable();
 

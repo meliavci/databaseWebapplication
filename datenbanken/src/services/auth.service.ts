@@ -14,7 +14,6 @@ export class AuthService {
 
 		const hashedPassword = await bcrypt.hash(userData.password, 10);
 
-		// Split name into firstName and lastName
 		const nameParts = userData.name?.split(' ') || [];
 		const firstName = nameParts[0] || '';
 		const lastName = nameParts.slice(1).join(' ') || '';
@@ -24,14 +23,12 @@ export class AuthService {
 			firstName,
 			lastName,
 			password_hash: hashedPassword,
-			role: 'user' as const, // Set default role for new users
+			role: 'user' as const,
 		};
 
-		// Remove properties that are not direct columns in the user table
 		delete userToSave.password;
 		delete userToSave.name;
 
-		// Call createUser with a single object containing all user data
 		return await this.userService.createUser(userToSave);
 	}
 

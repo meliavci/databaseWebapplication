@@ -6,7 +6,6 @@ import bcrypt from "bcryptjs";
 import { Server } from "socket.io";
 import jwt from 'jsonwebtoken';
 
-// Define an interface for the objects we'll pass to the router
 interface SocketManager {
 	io: Server;
 	userSockets: Map<number, string>;
@@ -86,7 +85,6 @@ export function createUserRouter(db: Pool, socketManager: SocketManager) {
 				return res.status(404).json({ error: "User not found" });
 			}
 
-			// Emit event to the specific user whose role was changed
 			const userSocketId = socketManager.userSockets.get(userId);
 			if (userSocketId) {
 				const payload = { id: updatedUser.id, email: updatedUser.email, role: updatedUser.role };

@@ -57,16 +57,13 @@ export class OrderService {
 		try {
 			const { userId, cart, total } = payload;
 
-			// 1. Create the main order record
 			const [orderResult] = await connection.query<ResultSetHeader>(
 				`INSERT INTO rental_orders (user_id, order_date, total_amount, status) VALUES (?, NOW(), ?, ?)`,
 				[userId, total, 'pending']
 			);
 			const orderId = orderResult.insertId;
 
-			// 2. Process each item in the cart
 			for (const item of cart.items) {
-				// Find available inventory items for the product
 				// @ts-ignore
 				const [availableItems] = await connection.query<InventoryItem[]>(
 					`SELECT id FROM inventory_items WHERE product_id = ? AND status = 'available' LIMIT ? FOR UPDATE`,
@@ -77,7 +74,6 @@ export class OrderService {
 					throw new Error(`Not enough stock for product ID ${item.product_id}.`);
 				}
 
-				// 3. Create order items and update inventory status
 				for (const inventoryItem of availableItems) {
 					const rental_start_date = toMySQLDateTime(item.rental_start_date);
 					const rental_end_date = toMySQLDateTime(item.rental_end_date);
@@ -93,13 +89,11 @@ export class OrderService {
 				}
 			}
 
-			// 4. Mark the cart as completed
 			await connection.query(
 				`UPDATE shopping_carts SET status = 'completed' WHERE id = ?`,
 				[cart.id]
 			);
 
-			// 5. Finalize the order status
 			await connection.query(
 				`UPDATE rental_orders SET status = 'ongoing' WHERE id = ?`,
 				[orderId]
@@ -111,7 +105,7 @@ export class OrderService {
 		} catch (error) {
 			await connection.rollback();
 			console.error("Order creation failed, transaction rolled back.", error);
-			throw error; // Re-throw the error to be handled by the controller
+			throw error;
 		} finally {
 			connection.release();
 		}

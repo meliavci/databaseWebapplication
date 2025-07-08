@@ -7,7 +7,8 @@ export function createOrderRouter(db: Pool) {
 	const router = express.Router();
 	const orderService = new OrderService(db);
 
-	// POST /api/orders - Create a new order
+	// Create a new order
+	// @ts-ignore
 	router.post('/', authMiddleware, async (req: AuthenticatedRequest, res: Response) => {
 		try {
 			const userId = req.user!.id!;
@@ -32,7 +33,7 @@ export function createOrderRouter(db: Pool) {
 		}
 	});
 
-	// GET /api/orders - Get user's orders
+	// Get user's orders
 	router.get('/', authMiddleware, async (req: AuthenticatedRequest, res: Response) => {
 		try {
 			const userId = req.user!.id!;
@@ -44,10 +45,11 @@ export function createOrderRouter(db: Pool) {
 		}
 	});
 
-	// GET /api/orders/:id - Get specific order
+	// Get specific order
+	// @ts-ignore
 	router.get('/:id', authMiddleware, async (req: AuthenticatedRequest, res: Response) => {
 		try {
-			const orderId = parseInt(req.params.id, 10);
+			const orderId = parseInt(req.params['id'], 10);
 			if (isNaN(orderId)) {
 				return res.status(400).json({ error: 'Invalid order ID' });
 			}
@@ -57,7 +59,6 @@ export function createOrderRouter(db: Pool) {
 				return res.status(404).json({ error: 'Order not found' });
 			}
 
-			// Check if user owns this order
 			if (order.user_id !== req.user!.id) {
 				return res.status(403).json({ error: 'Access denied' });
 			}

@@ -1,7 +1,6 @@
 import dotenv from 'dotenv';
 import path from 'path';
 
-// Load environment variables from the .env file in the project root
 dotenv.config({ path: path.resolve(__dirname, '..', '.env') });
 
 import fs from 'fs/promises';
@@ -22,7 +21,6 @@ async function seedDatabase() {
 			certPath: process.env['DB_SSL_CERT_PATH'],
 		};
 
-		// Validate that all required environment variables are loaded
 		for (const [key, value] of Object.entries(dbConfig)) {
 			if (!value) {
 				const envVarName = `DB_${key.replace('certPath', 'SSL_CERT_PATH').toUpperCase()}`;
@@ -41,12 +39,11 @@ async function seedDatabase() {
 			ssl: {
 				ca: await fs.readFile(absoluteCertPath),
 			},
-			multipleStatements: true, // Allow multiple statements for cleanup
+			multipleStatements: true,
 		});
 
 		console.log('[SEED] Successfully connected to the database for seeding.');
 
-		// Clear existing data from dependent tables first
 		console.log('[SEED] Deleting existing inventory items and products...');
 		await connection.query('SET FOREIGN_KEY_CHECKS = 0;');
 		await connection.query('TRUNCATE TABLE inventory_items;');
@@ -66,7 +63,6 @@ async function seedDatabase() {
 
 		console.log(`[SEED] Found ${products.length} products to insert.`);
 
-		// Insert products and create corresponding inventory items
 		for (const product of products) {
 			const productQuery = 'INSERT INTO products (name, description, category, product_type, price_per_month, image_url) VALUES (?, ?, ?, ?, ?, ?)';
 			const [productResult] = await connection.execute(productQuery, [
@@ -81,7 +77,6 @@ async function seedDatabase() {
 			const productId = (productResult as mysql.ResultSetHeader).insertId;
 			console.log(`[SEED] Inserted product '${product.name}' with ID: ${productId}`);
 
-			// Create a corresponding inventory item for the new product
 			const serialNumber = `SN-${productId}-${Date.now()}`;
 			const inventoryQuery = 'INSERT INTO inventory_items (product_id, serial_number, status) VALUES (?, ?, ?)';
 			await connection.execute(inventoryQuery, [productId, serialNumber, 'available']);

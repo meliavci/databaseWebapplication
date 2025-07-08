@@ -16,7 +16,6 @@ import { createOrderRouter } from './controller/order.controller';
 
 dotenv.config({ path: path.resolve(__dirname, '..', '.env') });
 
-// Maps userId to socketId for targeted communication
 const userSockets = new Map<number, string>();
 
 async function startServer() {
@@ -24,7 +23,7 @@ async function startServer() {
 	const httpServer = createServer(app);
 	const io = new Server(httpServer, {
 		cors: {
-			origin: "http://localhost:4200", // Your Angular app's origin
+			origin: "http://localhost:4200",
 			methods: ["GET", "POST"]
 		}
 	});
@@ -46,7 +45,6 @@ async function startServer() {
 
 	app.use('/api', apiRouter);
 
-	// Socket.IO connection logic
 	io.on('connection', (socket) => {
 		console.log(`Socket connected: ${socket.id}`);
 		const token = socket.handshake.auth['token'];
@@ -58,7 +56,6 @@ async function startServer() {
 				userSockets.set(userId, socket.id);
 				console.log(`User ${userId} registered with socket ${socket.id}`);
 
-				// Add admin users to a special room
 				if (decoded.role === 'admin') {
 					socket.join('admin_room');
 					console.log(`Admin user ${userId} joined 'admin_room'`);

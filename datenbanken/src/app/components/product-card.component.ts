@@ -1,8 +1,12 @@
-import { Component, Input } from '@angular/core';
+import {Component, inject, Input, OnDestroy, OnInit} from '@angular/core';
 import { AddToCartButtonComponent } from './add-to-cart-button.component';
-import { RouterLink } from '@angular/router';
+import {RouterLink} from '@angular/router';
 import { Product } from '../../models/product.models';
-import { CommonModule } from '@angular/common';
+import {CommonModule, NgIf} from '@angular/common';
+import {ProductService, ProductWithStock} from '../servicesFE/product.service';
+import {filter, Subscription} from 'rxjs';
+import {WebSocketService} from '../servicesFE/websocket.service';
+import {AuthService} from '../servicesFE/authFE';
 
 @Component({
 	selector: 'app-product-card',
@@ -10,11 +14,12 @@ import { CommonModule } from '@angular/common';
 	imports: [
 		AddToCartButtonComponent,
 		RouterLink,
+		NgIf,
 		CommonModule
 	],
 	template: `
-		<div
-			 class="card block border border-neutral-700 rounded-3xl p-4 bg-neutral-900 hover:border-blue-500 transition-all duration-300 ease-in-out transform hover:-translate-y-1 cursor-pointer h-full flex flex-col">
+		<div *ngIf="product"
+				 class="card block border border-neutral-700 rounded-3xl p-4 bg-neutral-900 hover:border-blue-500 transition-all duration-300 ease-in-out transform hover:-translate-y-1 cursor-pointer h-full flex flex-col">
 			<div class="flex flex-col">
 				<a [routerLink]="['/product', product.id]" class="flex flex-col">
 					<div class="relative w-full h-48 mb-2">
@@ -43,8 +48,51 @@ import { CommonModule } from '@angular/common';
 		</div>
 	`
 })
-export class ProductCardComponent {
-	@Input() product!: Product;
+export class ProductCardComponent implements OnInit, OnDestroy {
+	@Input() product: ProductWithStock | Product | null = null;
+
+	private productService = inject(ProductService);
+	private webSocketService = inject(WebSocketService);
+	private authService = inject(AuthService);
+	private stockUpdateSubscription: Subscription | undefined;
+
+	ngOnInit(): void {
+		const token = this.authService.getToken();
+		if (token) {
+			this.webSocketService.connect(token);
+		}
+
+		if (this.product) {
+			if (!('stock' in this.product)) {
+				(this.product as ProductWithStock).stock = 0;
+				this.productService.getProduct(this.product.id).subscribe(p => {
+					if (this.product) {
+						(this.product as ProductWithStock).stock = p.stock;
+					}
+				});
+			}
+			this.listenForStockUpdates(this.product.id);
+		}
+	}
+
+	ngOnDestroy(): void {
+		if (this.stockUpdateSubscription) {
+			this.stockUpdateSubscription.unsubscribe();
+		}
+	}
+
+	listenForStockUpdates(productId: number): void {
+		this.stockUpdateSubscription = this.webSocketService.stockUpdate$
+			.pipe(
+				filter(update => update.productId === productId)
+			)
+			.subscribe(update => {
+				if (this.product) {
+					(this.product as ProductWithStock).stock = update.stock;
+					console.log(`Real-time stock update for product ${productId}: ${update.stock}`);
+				}
+			});
+	}
 
 	get today(): string {
 		return new Date().toISOString().split('T')[0];

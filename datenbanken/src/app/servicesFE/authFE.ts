@@ -66,7 +66,7 @@ export class AuthService {
 	updateToken(token: string): void {
 		if (typeof window !== 'undefined') {
 			localStorage.setItem('auth_token', token);
-			this.isLoggedInSubject.next(true); // Ensure logged-in state is still true
+			this.isLoggedInSubject.next(true);
 			console.log('Auth token updated.');
 		}
 	}

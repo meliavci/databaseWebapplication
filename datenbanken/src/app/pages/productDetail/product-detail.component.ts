@@ -83,7 +83,8 @@ import {AuthService} from "../../servicesFE/authFE";
 							[productId]="product.id"
 							[monthlyPrice]="discountedMonthlyPrice"
 							[rentalStartDate]="getRentalStartDate()"
-							[rentalEndDate]="getRentalEndDate()" [product]="product">
+							[rentalEndDate]="getRentalEndDate()"
+							[product]="product">
 						</app-add-to-cart-button>
 					</div>
 				</div>

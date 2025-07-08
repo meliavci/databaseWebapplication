@@ -1,17 +1,19 @@
-import { Component, inject, Input, OnInit } from '@angular/core';
-import {CommonModule, NgClass, NgIf} from '@angular/common';
+import { Component, inject, Input, OnDestroy, OnInit } from '@angular/core';
+import { CommonModule, NgClass, NgIf } from '@angular/common';
 import { CartService } from '../servicesFE/cart.service';
 import { AuthService } from '../servicesFE/authFE';
 import { Product } from '../../models/product.models';
 import { Router } from '@angular/router';
-import {ProductService, ProductWithStock} from '../servicesFE/product.service';
+import { ProductService } from '../servicesFE/product.service';
+import { Subscription } from 'rxjs';
 
 @Component({
 	selector: 'app-add-to-cart-button',
 	standalone: true,
 	imports: [
 		NgIf,
-		NgClass
+		NgClass,
+		CommonModule
 	],
 	template: `
 		<button (click)="addItemToCart()"
@@ -26,7 +28,7 @@ import {ProductService, ProductWithStock} from '../servicesFE/product.service';
 		</button>
 	`
 })
-export class AddToCartButtonComponent implements OnInit {
+export class AddToCartButtonComponent implements OnInit, OnDestroy {
 	@Input() productId!: number;
 	@Input() monthlyPrice!: number;
 	@Input() rentalStartDate!: string;
@@ -38,30 +40,33 @@ export class AddToCartButtonComponent implements OnInit {
 	private authService = inject(AuthService);
 	private router = inject(Router);
 	private productService = inject(ProductService);
+	private stockSubscription: Subscription | undefined;
 
 	isLoggedIn: boolean = false;
 	isOutOfStock: boolean = false;
 
 	ngOnInit(): void {
 		this.isLoggedIn = this.authService.isLoggedIn();
-		this.checkStock();
+		this.subscribeToStockUpdates();
 	}
 
-	checkStock(): void {
-		if (this.product && 'stock' in this.product) {
-			this.isOutOfStock = (this.product as ProductWithStock).stock <= 0;
-		} else {
-			// Fallback to fetch stock if not provided
-			this.productService.getProduct(this.productId).subscribe({
-				next: (productWithStock: ProductWithStock) => {
-					this.isOutOfStock = productWithStock.stock <= 0;
-				},
-				error: (err: any) => {
-					console.error('Failed to check product stock', err);
-					this.isOutOfStock = true; // Assume out of stock on error
-				}
-			});
-		}
+	ngOnDestroy(): void {
+		this.stockSubscription?.unsubscribe();
+	}
+
+	private subscribeToStockUpdates(): void {
+		this.productService.getProduct(this.productId).subscribe({
+			next: (productWithStock) => {
+				this.isOutOfStock = productWithStock.stock <= 0;
+				this.stockSubscription = this.productService.getProductStock(this.productId).subscribe(stock => {
+					this.isOutOfStock = stock <= 0;
+				});
+			},
+			error: (err) => {
+				console.error(`Failed to get initial stock for product ${this.productId}`, err);
+				this.isOutOfStock = true;
+			}
+		});
 	}
 
 	addItemToCart(): void {

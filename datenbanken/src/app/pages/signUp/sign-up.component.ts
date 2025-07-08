@@ -130,11 +130,9 @@ export class SignUpComponent {
 				console.error('Registration failed!', err);
 				this.isLoading = false;
 
-				// Show specific error message from server or generic message
 				const errorMessage = err.error?.error || err.error?.message || 'Registration failed. Please try again later.';
 				alert(`Registration error: ${errorMessage}`);
 
-				// Also set the error message for template display if needed
 				this.errorMessage = errorMessage;
 			}
 		});

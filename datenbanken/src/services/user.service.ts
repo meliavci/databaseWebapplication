@@ -5,7 +5,6 @@ export class UserService {
 	constructor(private db: Pool) {}
 
 	async createUser(userData: Omit<User, 'id'>): Promise<User> {
-		// Destructure all required and optional properties from the single userData object
 		const { username, email, password_hash, role, firstName, lastName, address } = userData;
 
 		const [result] = await this.db.execute(

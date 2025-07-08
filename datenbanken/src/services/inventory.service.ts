@@ -4,16 +4,10 @@ import { InventoryItem } from "../models/inventory_item.models";
 export class InventoryService {
 	constructor(private db: Pool) {}
 
-	/**
-	 * Adds a specified number of new inventory items for a given product.
-	 * @param productId The ID of the product.
-	 * @param count The number of items to add.
-	 */
 	async addStockForProduct(productId: number, count: number): Promise<void> {
 		if (count <= 0) return;
 		const values = [];
 		for (let i = 0; i < count; i++) {
-			// Using a placeholder for serial_number, adjust as needed
 			const serialNumber = `SN-${productId}-${Date.now()}-${i}`;
 			values.push([productId, serialNumber, 'available']);
 		}
@@ -23,11 +17,6 @@ export class InventoryService {
 		);
 	}
 
-	/**
-	 * Removes a specified number of available inventory items for a given product.
-	 * @param productId The ID of the product.
-	 * @param count The number of items to remove.
-	 */
 	async removeStockForProduct(productId: number, count: number): Promise<void> {
 		if (count <= 0) return;
 		// Find available items to delete

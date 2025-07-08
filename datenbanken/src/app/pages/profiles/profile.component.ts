@@ -325,7 +325,6 @@ export class ProfileComponent implements OnInit, OnDestroy {
 				if (this.isAdmin) {
 					this.loadAllUsers();
 					this.loadInventory();
-					// If the user was just promoted to admin, switch to the inventory tab
 					if (!wasAdmin) {
 						this.activeTab = 'admin-inventory';
 					}
@@ -431,13 +430,11 @@ export class ProfileComponent implements OnInit, OnDestroy {
 
 		this.productService.updateStock(item.id, amount).subscribe({
 			next: () => {
-				// Reload the entire inventory to reflect the change
 				this.loadInventory();
 			},
 			error: (err: any) => {
 				console.error(`Failed to update stock for ${item.name}`, err);
 				alert('Failed to update stock. See console for details.');
-				// Optionally reload inventory even on error to sync state
 				this.loadInventory();
 			}
 		});

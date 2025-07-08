@@ -9,9 +9,9 @@ export function createCartRouter(db: Pool) {
 	const shoppingCartService = new ShoppingCartService(db);
 	const cartItemService = new CartItemService(db);
 
-	router.use(authMiddleware); // All cart operations require a logged-in user
+	router.use(authMiddleware);
 
-	// GET /api/cart -> Get the current user's active cart
+	// Get the current user's active cart
 	router.get('/', async (req: AuthenticatedRequest, res: Response) => {
 		try {
 			const userId = req.user!.id!;
@@ -24,7 +24,7 @@ export function createCartRouter(db: Pool) {
 		}
 	});
 
-	// POST /api/cart/items -> Add an item to the cart
+	// Add an item to the cart
 	// @ts-ignore
 	router.post('/items', async (req: AuthenticatedRequest, res: Response) => {
 		try {
@@ -37,7 +37,6 @@ export function createCartRouter(db: Pool) {
 
 			const cart = await shoppingCartService.getOrCreateActiveCart(userId);
 
-			// Corrected argument order
 			const newItem = await cartItemService.addItem(
 				cart.id,
 				productId,
@@ -54,14 +53,13 @@ export function createCartRouter(db: Pool) {
 		}
 	});
 
-	// DELETE /api/cart/items/:itemId -> Remove an item from the cart
+	// Remove an item from the cart
 	router.delete('/items/:itemId', async (req: AuthenticatedRequest, res: Response) => {
 		try {
 			const itemId = parseInt(req.params["itemId"], 10);
-			// Optional: Check if the item belongs to the user's cart before deleting
 			const success = await cartItemService.removeItem(itemId);
 			if (success) {
-				res.status(204).send(); // No Content
+				res.status(204).send();
 			} else {
 				res.status(404).json({ error: "Artikel nicht im Warenkorb gefunden" });
 			}

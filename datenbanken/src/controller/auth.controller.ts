@@ -5,7 +5,6 @@ import jwt from 'jsonwebtoken';
 import { UserService } from '../services/user.service';
 import { Server } from 'socket.io';
 
-// Schnittstelle für den SocketManager
 interface SocketManager {
 	io: Server;
 	userSockets: Map<number, string>;
@@ -15,7 +14,7 @@ export function createAuthRouter(db: Pool, socketManager: SocketManager) {
 	const router = express.Router();
 	const userService = new UserService(db);
 
-	// POST /api/auth/register - Neuen Benutzer registrieren
+	// Neuen Benutzer registrieren
 	// @ts-ignore
 	router.post('/register', async (req, res) => {
 		const { name, username, email, password } = req.body;
@@ -42,7 +41,6 @@ export function createAuthRouter(db: Pool, socketManager: SocketManager) {
 				lastName
 			});
 
-			// Sende Event an alle Admins im 'admin_room'
 			socketManager.io.to('admin_room').emit('user_created', newUser);
 			console.log(`'user_created' event emitted for new user: ${newUser.username}`);
 
@@ -54,7 +52,7 @@ export function createAuthRouter(db: Pool, socketManager: SocketManager) {
 		}
 	});
 
-	// POST /api/auth/login - Benutzer anmelden
+	// Benutzer anmelden
 	// @ts-ignore
 	router.post('/login', async (req, res) => {
 		const { username, password } = req.body;
