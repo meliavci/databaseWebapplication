@@ -110,7 +110,7 @@ export class SignUpComponent {
 
 	onSubmit(form: NgForm): void {
 		if (!form.valid) {
-			console.log("Formular ist ungültig.");
+			alert('Please fill in all required fields correctly.');
 			return;
 		}
 
@@ -121,17 +121,21 @@ export class SignUpComponent {
 
 		this.authService.register({ name, username, email, password }).subscribe({
 			next: (response) => {
-				console.log('Registrierung erfolgreich!', response);
+				console.log('Registration successful!', response);
 				this.isLoading = false;
-
 				alert('Your account has been successfully created! Please log in now.');
-
 				this.router.navigate(['/signIn']);
 			},
 			error: (err) => {
-				console.error('Registrierung fehlgeschlagen!', err);
-				this.errorMessage = err.error?.message || 'Registrierung fehlgeschlagen. Bitte versuche es später erneut.';
+				console.error('Registration failed!', err);
 				this.isLoading = false;
+
+				// Show specific error message from server or generic message
+				const errorMessage = err.error?.error || err.error?.message || 'Registration failed. Please try again later.';
+				alert(`Registration error: ${errorMessage}`);
+
+				// Also set the error message for template display if needed
+				this.errorMessage = errorMessage;
 			}
 		});
 	}

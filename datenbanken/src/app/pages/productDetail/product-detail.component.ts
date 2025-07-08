@@ -32,7 +32,9 @@ import {InventoryService} from '../../servicesFE/inventory.service';
 					</div>
 
 					<div>
-						<div class="inline-block text-sm text-gray-300 mb-2 border-blue-500 rounded-full px-2 border">{{ product.category }}</div>
+						<div
+							class="inline-block text-sm text-gray-300 mb-2 border-blue-500 rounded-full px-2 border">{{ product.category }}
+						</div>
 						<h1 class="text-4xl font-bold mb-4">{{ product.name }}</h1>
 						<p class="text-gray-300 text-md mb-6">{{ product.description }}</p>
 
@@ -65,7 +67,8 @@ import {InventoryService} from '../../servicesFE/inventory.service';
 								{{ totalPrice | number:'1.2-2' }}€
 								<span class="text-base font-normal text-gray-400">total price</span>
 							</div>
-							<div class="text-sm mb-6" [ngClass]="{'text-green-400': product.stock > 0, 'text-red-400': product.stock === 0}">
+							<div class="text-sm mb-6"
+									 [ngClass]="{'text-green-400': product.stock > 0, 'text-red-400': product.stock === 0}">
 								<ng-container *ngIf="product.stock > 0; else outOfStock">
 									In Stock: {{ product.stock }} items
 								</ng-container>
@@ -79,7 +82,7 @@ import {InventoryService} from '../../servicesFE/inventory.service';
 							[productId]="product.id"
 							[monthlyPrice]="discountedMonthlyPrice"
 							[rentalStartDate]="getRentalStartDate()"
-							[rentalEndDate]="getRentalEndDate()">
+							[rentalEndDate]="getRentalEndDate()" [product]="product">
 						</app-add-to-cart-button>
 					</div>
 				</div>

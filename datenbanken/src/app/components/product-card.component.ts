@@ -35,7 +35,8 @@ import { CommonModule } from '@angular/common';
 						[productId]="product.id"
 						[monthlyPrice]="product.price_per_month"
 						[rentalStartDate]="today"
-						[rentalEndDate]="nextMonth">
+						[rentalEndDate]="nextMonth"
+						[product]="product">
 					</app-add-to-cart-button>
 				</div>
 			</div>

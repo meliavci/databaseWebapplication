@@ -53,6 +53,16 @@ export class AuthService {
 		}
 	}
 
+	isLoggedIn(): boolean {
+		if (typeof window !== 'undefined') {
+			const token = localStorage.getItem('auth_token');
+			const isLoggedIn = !!token;
+			this.isLoggedInSubject.next(isLoggedIn);
+			return isLoggedIn;
+		}
+		return false;
+	}
+
 	updateToken(token: string): void {
 		if (typeof window !== 'undefined') {
 			localStorage.setItem('auth_token', token);
