@@ -1,13 +1,12 @@
-import {Component, inject, OnInit} from '@angular/core';
+import {Component, inject, OnDestroy, OnInit} from '@angular/core';
 import {AddToCartButtonComponent} from '../../components/add-to-cart-button.component';
 import {FormsModule} from '@angular/forms';
 import {DecimalPipe, NgClass, NgForOf, NgIf} from '@angular/common';
 import {ActivatedRoute} from '@angular/router';
 import {ProductService, ProductWithStock} from '../../servicesFE/product.service';
-import {Product} from '../../../models/product.models';
-import {InventoryService} from '../../servicesFE/inventory.service';
 import {WebSocketService} from '../../servicesFE/websocket.service';
 import {filter, Subscription} from 'rxjs';
+import {AuthService} from "../../servicesFE/authFE";
 
 
 @Component({
@@ -92,13 +91,14 @@ import {filter, Subscription} from 'rxjs';
 		</div>
 	`
 })
-export class ProductDetailComponent implements OnInit {
+export class ProductDetailComponent implements OnInit, OnDestroy {
 	product: ProductWithStock | null = null;
 	basePrice: number = 0;
 
 	private route = inject(ActivatedRoute);
 	private productService = inject(ProductService);
 	private webSocketService = inject(WebSocketService);
+	private authService = inject(AuthService);
 	private stockUpdateSubscription: Subscription | undefined;
 
 	rentalOptions = [
@@ -110,6 +110,11 @@ export class ProductDetailComponent implements OnInit {
 	selectedOption = this.rentalOptions[0];
 
 	ngOnInit(): void {
+		const token = this.authService.getToken();
+		if (token) {
+			this.webSocketService.connect(token);
+		}
+
 		const productId = this.route.snapshot.paramMap.get('id');
 		if (productId) {
 			this.productService.getProduct(+productId).subscribe({
@@ -130,6 +135,7 @@ export class ProductDetailComponent implements OnInit {
 		if (this.stockUpdateSubscription) {
 			this.stockUpdateSubscription.unsubscribe();
 		}
+		this.webSocketService.disconnect();
 	}
 
 	listenForStockUpdates(productId: number): void {
